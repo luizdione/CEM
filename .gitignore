@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+out/
+build/Release/
+*.tsbuildinfo
+.turbo/
+
+# Desktop packaging output
+apps/desktop/release/
+apps/desktop/dist-electron/
+
+# Test / coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.recommended.json
+*.swp
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# CEM working / scratch artifacts (never commit user backups or secrets)
+*.cem
+!examples/**/*.cem
+.cem-workspace/
+scratch/
+tmp/

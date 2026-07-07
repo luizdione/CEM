@@ -1,0 +1,38 @@
+{
+  "name": "@cem/cli",
+  "version": "1.0.0",
+  "description": "Command-line interface for the Claude Environment Manager (cem).",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "cem": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@cem/backup": "workspace:*",
+    "@cem/core": "workspace:*",
+    "@cem/crypto": "workspace:*",
+    "@cem/diagnostics": "workspace:*",
+    "@cem/markdown": "workspace:*",
+    "@cem/mcp": "workspace:*",
+    "@cem/profiles": "workspace:*",
+    "@cem/restore": "workspace:*",
+    "@cem/scanner": "workspace:*",
+    "@cem/shared": "workspace:*",
+    "commander": "^12.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

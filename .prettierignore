@@ -1,0 +1,9 @@
+node_modules
+dist
+out
+coverage
+release
+dist-electron
+pnpm-lock.yaml
+CHANGELOG.md
+*.cem

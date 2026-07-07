@@ -1,0 +1,34 @@
+{
+  "name": "@cem/diagnostics",
+  "version": "1.0.0",
+  "description": "Diagnostics for CEM: detect orphans, broken MCP configs, duplicates, token bloat and token rollups.",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@cem/shared": "workspace:*",
+    "@cem/core": "workspace:*",
+    "@cem/scanner": "workspace:*",
+    "@cem/mcp": "workspace:*",
+    "@cem/markdown": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3"
+  }
+}

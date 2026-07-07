@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "types": ["node"],
+    "paths": {
+      "@cem/shared": ["./packages/shared/src/index.ts"],
+      "@cem/core": ["./packages/core/src/index.ts"],
+      "@cem/crypto": ["./packages/crypto/src/index.ts"],
+      "@cem/scanner": ["./packages/scanner/src/index.ts"],
+      "@cem/markdown": ["./packages/markdown/src/index.ts"],
+      "@cem/mcp": ["./packages/mcp/src/index.ts"],
+      "@cem/profiles": ["./packages/profiles/src/index.ts"],
+      "@cem/diagnostics": ["./packages/diagnostics/src/index.ts"],
+      "@cem/backup": ["./packages/backup/src/index.ts"],
+      "@cem/restore": ["./packages/restore/src/index.ts"]
+    }
+  },
+  "include": ["packages/*/src/**/*.ts", "apps/cli/src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["**/dist/**", "**/node_modules/**", "**/*.test.ts", "**/*.spec.ts"]
+}
