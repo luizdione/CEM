@@ -36,6 +36,17 @@ export interface RestoreRequestOptions {
   externalBaseDir?: string;
 }
 
+export interface McpActionResult {
+  ok: boolean;
+  reason?: string;
+  path?: string;
+  into?: string;
+  count?: number;
+  added?: number;
+  updated?: number;
+  skipped?: number;
+}
+
 export interface VerifyResponse {
   manifest: CemManifest;
   verification: VerifyResult;
@@ -55,6 +66,10 @@ export interface CemApi {
   scan(options?: Record<string, unknown>): Promise<ScanResult>;
   diagnose(options?: Record<string, unknown>): Promise<EnvironmentDiagnosis>;
   listMcp(options?: Record<string, unknown>): Promise<McpServerDefinition[]>;
+  mcpExport(options?: Record<string, unknown>): Promise<McpActionResult>;
+  mcpImport(): Promise<McpActionResult>;
+  mcpToggle(args: { sourcePath: string; name: string; disabled: boolean }): Promise<{ ok: boolean; reason?: string }>;
+  mcpRemove(args: { sourcePath: string; name: string }): Promise<{ ok: boolean; reason?: string }>;
   listSkills(options?: Record<string, unknown>): Promise<SkillMetadata[]>;
   listAgents(options?: Record<string, unknown>): Promise<AgentMetadata[]>;
   tokens(options?: Record<string, unknown>): Promise<TokenReport>;

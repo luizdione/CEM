@@ -6,6 +6,7 @@
 | [API Reference](./api.md) | Public API of each `@cem/*` package |
 | [`.cem` Format](./cem-format.md) | On‑disk specification of the `.cem` archive |
 | [Scanner](./scanner.md) | How artifacts are discovered (read‑only) |
+| [MCP Manager](./mcp.md) | Discover, inspect and edit MCP server configs |
 | [Backup System](./backup-system.md) | How a backup is planned and written |
 | [Profiles](./profiles.md) | Activation profiles and matching rules |
 | [Plugins](./plugins.md) | Plugin detection and the extensibility model |

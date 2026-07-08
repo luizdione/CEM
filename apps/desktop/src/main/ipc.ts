@@ -12,7 +12,15 @@ import {
 } from '@cem/core';
 import { scanEnvironment, filterArtifacts, type ScanOptions } from '@cem/scanner';
 import { diagnoseEnvironment } from '@cem/diagnostics';
-import { discoverMcpServers, redactServers } from '@cem/mcp';
+import {
+  discoverMcpServers,
+  redactServers,
+  exportServers,
+  importServers,
+  upsertServers,
+  setServerDisabled,
+  removeServer,
+} from '@cem/mcp';
 import {
   analyzeMarkdown,
   analyzeSkillFile,
@@ -100,6 +108,64 @@ export function registerIpcHandlers(): void {
   ipcMain.handle(IPC.diagnose, (_e, options: ScanOptions = {}) => diagnoseEnvironment(options));
   ipcMain.handle(IPC.listMcp, async (_e, options = {}) =>
     redactServers(await discoverMcpServers(options)),
+  );
+
+  ipcMain.handle(IPC.mcpExport, async (_e, options = {}) => {
+    const servers = await discoverMcpServers(options);
+    if (servers.length === 0) return { ok: false, reason: 'no-servers' };
+    const win = BrowserWindow.getFocusedWindow();
+    const res = await dialog.showSaveDialog(win!, {
+      defaultPath: 'mcp.json',
+      filters: [{ name: 'MCP config', extensions: ['json'] }],
+    });
+    if (res.canceled || !res.filePath) return { ok: false, reason: 'cancelled' };
+    await exportServers(servers, res.filePath);
+    await appendAudit({ action: 'export', ok: true, message: `mcp → ${res.filePath}` }).catch(
+      () => undefined,
+    );
+    return { ok: true, path: res.filePath, count: servers.length };
+  });
+
+  ipcMain.handle(IPC.mcpImport, async () => {
+    const win = BrowserWindow.getFocusedWindow();
+    const src = await dialog.showOpenDialog(win!, {
+      properties: ['openFile'],
+      filters: [{ name: 'MCP config', extensions: ['json'] }],
+    });
+    if (src.canceled || !src.filePaths[0]) return { ok: false, reason: 'cancelled' };
+    const servers = await importServers(src.filePaths[0]);
+    const dest = await dialog.showOpenDialog(win!, {
+      title: 'Choose config file to merge into',
+      properties: ['openFile'],
+      filters: [{ name: 'JSON config', extensions: ['json'] }],
+    });
+    if (dest.canceled || !dest.filePaths[0]) return { ok: false, reason: 'cancelled' };
+    const result = await upsertServers(dest.filePaths[0], servers);
+    await appendAudit({ action: 'import', ok: true, message: `mcp → ${dest.filePaths[0]}` }).catch(
+      () => undefined,
+    );
+    return { ok: true, into: dest.filePaths[0], ...result };
+  });
+
+  ipcMain.handle(
+    IPC.mcpToggle,
+    async (_e, { sourcePath, name, disabled }: { sourcePath: string; name: string; disabled: boolean }) => {
+      if (sourcePath.includes('#')) return { ok: false, reason: 'nested-config' };
+      const ok = await setServerDisabled(sourcePath, name, disabled);
+      return { ok };
+    },
+  );
+
+  ipcMain.handle(
+    IPC.mcpRemove,
+    async (_e, { sourcePath, name }: { sourcePath: string; name: string }) => {
+      if (sourcePath.includes('#')) return { ok: false, reason: 'nested-config' };
+      const ok = await removeServer(sourcePath, name);
+      await appendAudit({ action: 'remove', ok, message: `mcp remove ${name}` }).catch(
+        () => undefined,
+      );
+      return { ok };
+    },
   );
   ipcMain.handle(IPC.tokens, (_e, options: ScanOptions = {}) => tokenReport(options));
   ipcMain.handle(IPC.listSkills, (_e, options: ScanOptions = {}) => listSkills(options));

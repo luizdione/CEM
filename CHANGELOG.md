@@ -30,6 +30,9 @@ All notable changes to this project are documented here. The format is based on
 - **Skills & Agents managers** — front‑matter parsing surfaces skill metadata (description, author,
   version, dependencies, tokens) and agent metadata (model, tools, enabled state) in both the CLI
   (`cem skills`, `cem agents`) and dedicated desktop views.
+- **MCP manager write actions** — export/import `mcp.json`, merge into a config file
+  (non‑destructive), enable/disable and remove servers, from the CLI (`cem mcp …`) and the desktop
+  MCP view. CEM only edits your own declarative config files and never runs an MCP server.
 - **Desktop app** — Electron + React UI with Dashboard, Scanner, Skills, Agents, Markdown, MCP,
   Profiles, Diagnostics, Token Analyzer, Backup, Restore and Settings; light/dark themes.
 - **`.cem` format 1.0.0** — ZIP container with `manifest.json`, `checksums.json`, `entries.json`,
