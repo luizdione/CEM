@@ -27,14 +27,18 @@ Output is written to `apps/desktop/release/`.
 
 ## Icons
 
-Place platform icons in `apps/desktop/build/`:
+Platform icons ship in `apps/desktop/build/` and are used automatically by electron‑builder:
 
 - `icon.icns` (macOS)
 - `icon.ico` (Windows)
-- `icon.png` 512×512 (Linux)
+- `icon.png` 1024×1024 (Linux)
 
-If these are absent, electron‑builder uses a default icon. A source logo is provided in
-[`assets/logo.svg`](../../assets/logo.svg).
+Regenerate them from [`assets/logo.svg`](../../assets/logo.svg) any time with:
+
+```bash
+pnpm add -Dw sharp png2icons
+node scripts/generate-icons.mjs
+```
 
 ## CI
 
