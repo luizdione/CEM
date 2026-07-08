@@ -1,0 +1,24 @@
+/** IPC channel names shared between the main and renderer processes. */
+export const IPC = {
+  scan: 'cem:scan',
+  diagnose: 'cem:diagnose',
+  listMcp: 'cem:mcp:list',
+  tokens: 'cem:tokens',
+  listProfiles: 'cem:profiles:list',
+  createProfile: 'cem:profiles:create',
+  deleteProfile: 'cem:profiles:delete',
+  profileTemplates: 'cem:profiles:templates',
+  backup: 'cem:backup',
+  readManifest: 'cem:restore:manifest',
+  verify: 'cem:restore:verify',
+  restorePlan: 'cem:restore:plan',
+  restore: 'cem:restore:run',
+  pickFile: 'cem:dialog:pickFile',
+  pickDirectory: 'cem:dialog:pickDirectory',
+  getConfig: 'cem:config:get',
+  saveConfig: 'cem:config:save',
+  platformInfo: 'cem:platform',
+  openExternal: 'cem:openExternal',
+} as const;
+
+export type IpcChannel = (typeof IPC)[keyof typeof IPC];
