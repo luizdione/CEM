@@ -1,0 +1,214 @@
+<div align="center">
+
+# Claude Environment Manager (CEM)
+
+**Backup, restore, manage and migrate your Claude Code environment — safely and locally.**
+
+[![CI](https://github.com/luizdione/CEM/actions/workflows/ci.yml/badge.svg)](https://github.com/luizdione/CEM/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Semantic Versioning](https://img.shields.io/badge/semver-1.0.0-green.svg)](https://semver.org)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
+
+</div>
+
+> **Compliance first.** CEM does **not** modify, patch, reverse‑engineer or intercept Claude Code
+> or any Anthropic software. It only reads and writes **your own local files** in documented
+> locations, uses public/supported mechanisms, and fully respects the
+> [Anthropic Terms of Use](https://www.anthropic.com/legal/consumer-terms).
+
+---
+
+## 🇧🇷 Resumo (Português)
+
+O **Claude Environment Manager (CEM)** é um aplicativo desktop + CLI para **backup, restauração,
+gerenciamento e migração** completa do seu ambiente do Claude Code. Ele localiza automaticamente
+suas configurações, skills, agentes, MCPs, arquivos `CLAUDE.md`, prompts e templates **apenas em
+arquivos locais documentados**, e permite empacotá‑los em um arquivo `.cem` (ZIP com manifesto,
+checksums e criptografia opcional AES‑256) para reinstalar tudo em outro computador com poucos
+cliques. O CEM **nunca** modifica binários da Anthropic, nem burla limites, autenticação ou APIs
+privadas.
+
+---
+
+## What is CEM?
+
+Claude Code stores your configuration, memory, skills, subagents, slash‑commands, MCP servers and
+project settings across a handful of documented local files (`~/.claude/`, `~/.claude.json`,
+project `CLAUDE.md` / `.mcp.json`, …). When you move to a new machine, reproducing that setup by
+hand is tedious and error‑prone.
+
+**CEM** discovers all of those artifacts, lets you inspect and organize them, and packages them into
+a single portable, verifiable, optionally‑encrypted `.cem` file. On the new machine you install
+Claude Code, install CEM, import the `.cem`, and your environment is back.
+
+## ✨ Features
+
+| Area | What it does |
+| --- | --- |
+| **Dashboard** | Environment state, integrity, counts (skills / agents / MCP / profiles), footprint, alerts |
+| **Smart Scanner** | Read‑only discovery of every Claude Code artifact across documented locations + deep sweep of `~/.claude` |
+| **MCP Manager** | Lists MCP servers from `~/.claude.json`, `settings.json`, `.mcp.json`, `claude_desktop_config.json`; masks secrets |
+| **Skills / Agents / Markdown** | Browse, search and inspect skills, subagents and `CLAUDE.md`‑style docs with token estimates |
+| **Token Analyzer** | Tokens per file/category, large‑file detection, content‑overlap (redundancy) detection, waste report |
+| **Profiles** | Activate a subset of config/docs per workflow (Development, Research, Bioinformatics, Python, Next.js, Docker, …) |
+| **Diagnostics** | Orphan references, broken MCP configs, duplicates, token bloat |
+| **Backup / Restore** | Create and restore `.cem` archives with checksums, integrity verification and selective restore |
+| **Encryption** | AES‑256‑GCM payload encryption with Argon2id key derivation + Ed25519 signing primitives |
+| **CLI** | `cem scan | doctor | backup | restore | verify | export | import | profiles | tokens | mcp` |
+
+## 📸 Screenshots
+
+> _Placeholders — replace with real captures once the app is running._
+
+| Dashboard | Token Analyzer | Restore |
+| --- | --- | --- |
+| ![Dashboard](./assets/screenshot-dashboard.png) | ![Tokens](./assets/screenshot-tokens.png) | ![Restore](./assets/screenshot-restore.png) |
+
+## 🧭 Objectives
+
+- Reinstall a complete Claude Code environment on a new computer **in a few clicks**.
+- Keep everything **local, transparent and reversible** — nothing is deleted automatically.
+- Be a **good citizen**: only documented files, public APIs, supported commands and MCPs.
+- Provide a **modular, open‑source** codebase where each component works independently.
+
+## 🚀 Installation
+
+### From a release (recommended for users)
+
+Download the installer for your platform from the
+[Releases page](https://github.com/luizdione/CEM/releases):
+
+- **Windows** — `Claude Environment Manager-Setup-x.y.z.exe`
+- **macOS** — `Claude Environment Manager-x.y.z-<arch>.dmg`
+- **Linux** — `.AppImage` or `.deb`
+
+### From source (for developers)
+
+```bash
+# Requires Node.js >= 20 and pnpm >= 9
+git clone https://github.com/luizdione/CEM.git
+cd CEM
+pnpm install
+pnpm build          # build all packages + the CLI
+
+# Run the CLI
+node apps/cli/dist/index.js --help
+
+# Launch the desktop app in dev mode
+pnpm dev:desktop
+```
+
+### Install the CLI globally
+
+```bash
+pnpm build:cli
+npm i -g ./apps/cli     # exposes the `cem` command
+cem --help
+```
+
+## 📋 Requirements
+
+- **Node.js ≥ 20** and **pnpm ≥ 9** (for building from source)
+- Claude Code installed locally (CEM reads its documented files; it does not require Claude Code to run)
+- OS: Windows 10+, macOS 12+, or a modern Linux distribution
+
+## 💻 Usage examples
+
+```bash
+# See what CEM finds (read-only)
+cem scan
+
+# Full health check
+cem doctor
+
+# Create an encrypted backup
+CEM_PASSWORD='correct horse battery staple' cem backup --encrypt
+
+# Inspect an archive without restoring
+cem verify ~/CEM\ Backups/cem-backup-2025-01-31_14-05-09.cem
+
+# Restore onto a new machine (dry run first)
+cem restore backup.cem --dry-run
+cem restore backup.cem --yes
+
+# Restore only skills and agents
+cem restore backup.cem --kinds skill,agent
+
+# Analyze token usage / find redundant docs
+cem tokens
+
+# Create a profile from a template and back up only its artifacts
+cem profiles create "My Python" --from-template Python
+cem backup --profile "My Python"
+```
+
+## 🏗️ Architecture
+
+CEM is a **pnpm monorepo** built with TypeScript. The domain logic lives in framework‑agnostic
+packages that are consumed by both the CLI and the desktop app.
+
+```
+CEM/
+├── apps/
+│   ├── desktop/     # Electron + React UI (electron-vite)
+│   ├── cli/         # `cem` command (commander)
+│   └── installer/   # packaging config & notes
+├── packages/
+│   ├── shared/      # Result type, errors, logger, fs & format helpers
+│   ├── core/        # domain model, Claude Code locations, tokens, .cem manifest, config
+│   ├── crypto/      # AES-256-GCM, Argon2id, SHA-256, Ed25519
+│   ├── scanner/     # read-only artifact discovery
+│   ├── markdown/    # token/line stats, references, overlap detection
+│   ├── mcp/         # MCP discovery, normalization, redaction
+│   ├── profiles/    # profile CRUD, matching, templates
+│   ├── diagnostics/ # health checks + token rollups
+│   ├── backup/      # .cem planner & writer
+│   └── restore/     # read, verify, restore
+├── docs/            # architecture, API, .cem format, flows, manuals
+├── examples/        # a sample Claude environment to try CEM on
+├── scripts/         # helper scripts
+└── tests/           # integration tests
+```
+
+Read more in [`docs/architecture.md`](./docs/architecture.md) and the
+[`.cem` format spec](./docs/cem-format.md).
+
+### Design principles
+
+SOLID · DRY · KISS · Clean Architecture · Clean Code. Every package is independent, has a single
+responsibility and can be reused on its own. New modules can be added without touching the core.
+
+## ❓ FAQ
+
+**Does CEM modify Claude Code?**
+No. CEM never writes to Claude Code binaries or Anthropic code, never intercepts traffic, never
+touches authentication or usage limits. It reads documented local files and writes `.cem` archives
+and (on restore) your own config files.
+
+**Is my data sent anywhere?**
+No. CEM has **zero telemetry**. Everything stays on your machine unless *you* export a `.cem` file
+or configure an optional sync target.
+
+**Are my secrets safe in a backup?**
+MCP environment values and other sensitive fields live inside the archive payload, which you can
+encrypt with AES‑256‑GCM (Argon2id‑derived key). The manifest never stores your password.
+
+**Is the token count exact?**
+No — it is a fast heuristic for *relative* comparison. CEM does not call any Anthropic tokenizer or
+API.
+
+See [`docs/faq.md`](./docs/faq.md) for more.
+
+## 🗺️ Roadmap
+
+See [`ROADMAP.md`](./ROADMAP.md). Highlights: optional Git/cloud sync, richer plugin management,
+diff‑based incremental backups, and signed archive distribution.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [`CONTRIBUTING.md`](./CONTRIBUTING.md) and our
+[`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). Security issues: see [`SECURITY.md`](./SECURITY.md).
+
+## 📄 License
+
+[MIT](./LICENSE) © Luiz Dione and CEM Contributors.

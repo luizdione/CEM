@@ -1,0 +1,28 @@
+name: ✨ Feature request
+description: Suggest an idea for CEM
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What are you trying to do that CEM doesn't support yet?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: compliance
+    attributes:
+      label: Compliance
+      options:
+        - label: This request does NOT involve modifying, reverse-engineering or intercepting Claude Code or any Anthropic software.
+          required: true

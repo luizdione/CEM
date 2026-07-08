@@ -1,0 +1,59 @@
+name: 🐛 Bug report
+description: Report a problem with CEM
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please do **not** include secrets (API keys, tokens) or the
+        contents of `.claude.json` in this report.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `cem ...`
+        2. ...
+        3. See error
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where did it happen?
+      options:
+        - CLI
+        - Desktop app
+        - A specific @cem/* package
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: CEM version
+      placeholder: '1.0.0'
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output
+      description: Relevant CLI output or errors (redact anything sensitive).
+      render: shell

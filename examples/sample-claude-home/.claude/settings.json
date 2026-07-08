@@ -1,0 +1,16 @@
+{
+  "theme": "dark",
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/data"],
+      "env": {
+        "FS_ROOT": "/data"
+      }
+    },
+    "example-http": {
+      "type": "http",
+      "url": "https://mcp.example.com/sse"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CEM logo">
+  <defs>
+    <linearGradient id="cemGrad" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6ea8fe"/>
+      <stop offset="1" stop-color="#3d7dfc"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="224" height="224" rx="48" fill="#0f1115"/>
+  <rect x="16" y="16" width="224" height="224" rx="48" fill="url(#cemGrad)" opacity="0.14"/>
+  <rect x="17" y="17" width="222" height="222" rx="47" stroke="url(#cemGrad)" stroke-width="2" opacity="0.5"/>
+  <path d="M168 92c-10-12-25-19-42-19-31 0-55 24-55 55s24 55 55 55c17 0 32-7 42-19"
+        stroke="url(#cemGrad)" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <circle cx="180" cy="82" r="12" fill="url(#cemGrad)"/>
+  <circle cx="180" cy="174" r="12" fill="url(#cemGrad)"/>
+</svg>

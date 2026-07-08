@@ -1,0 +1,45 @@
+name: Build Desktop
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/desktop/**'
+      - 'packages/**'
+      - '.github/workflows/build.yml'
+
+env:
+  ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+
+jobs:
+  build:
+    name: Build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, name: Linux }
+          - { os: windows-latest, name: Windows }
+          - { os: macos-latest, name: macOS }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build desktop bundle
+        run: pnpm --filter @cem/desktop build
