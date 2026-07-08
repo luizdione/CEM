@@ -48,14 +48,14 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 | **Dashboard** | Environment state, integrity, counts (skills / agents / MCP / profiles), footprint, alerts |
 | **Smart Scanner** | Read‑only discovery of every Claude Code artifact across documented locations + deep sweep of `~/.claude` |
 | **MCP Manager** | Lists MCP servers from `~/.claude.json`, `settings.json`, `.mcp.json`, `claude_desktop_config.json`; masks secrets |
-| **Skills / Agents / Markdown** | Browse, search and inspect skills, subagents and `CLAUDE.md`‑style docs with token estimates |
+| **Skills / Agents / Markdown** | Inspect skills (description, author, version, dependencies, tokens) and agents (model, tools, enabled state) via front‑matter parsing; browse `CLAUDE.md`‑style docs |
 | **Token Analyzer** | Tokens per file/category, large‑file detection, content‑overlap (redundancy) detection, waste report |
 | **Profiles** | Activate a subset of config/docs per workflow (Development, Research, Bioinformatics, Python, Next.js, Docker, …) |
 | **Diagnostics** | Orphan references, broken MCP configs, duplicates, token bloat |
 | **Backup / Restore** | Create and restore `.cem` archives with checksums, integrity verification and selective restore |
 | **Encryption** | AES‑256‑GCM payload encryption with Argon2id key derivation + Ed25519 signing primitives |
 | **History & Logs** | Local backup registry (populates "last backup") and an append‑only audit log of operations |
-| **CLI** | `cem scan | doctor | backup | restore | verify | export | import | profiles | tokens | mcp | history` |
+| **CLI** | `cem scan | doctor | backup | restore | verify | export | import | profiles | skills | agents | tokens | mcp | history` |
 
 ## 📸 Screenshots
 

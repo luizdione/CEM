@@ -1,4 +1,5 @@
 import type {
+  AgentMetadata,
   AuditEntry,
   BackupRecord,
   CemAppConfig,
@@ -8,6 +9,7 @@ import type {
   Profile,
   ProfileSelection,
   ScanResult,
+  SkillMetadata,
 } from '@cem/core';
 import type { CreateProfileInput } from '@cem/profiles';
 import type { EnvironmentDiagnosis } from '@cem/diagnostics';
@@ -53,6 +55,8 @@ export interface CemApi {
   scan(options?: Record<string, unknown>): Promise<ScanResult>;
   diagnose(options?: Record<string, unknown>): Promise<EnvironmentDiagnosis>;
   listMcp(options?: Record<string, unknown>): Promise<McpServerDefinition[]>;
+  listSkills(options?: Record<string, unknown>): Promise<SkillMetadata[]>;
+  listAgents(options?: Record<string, unknown>): Promise<AgentMetadata[]>;
   tokens(options?: Record<string, unknown>): Promise<TokenReport>;
   listProfiles(): Promise<Profile[]>;
   createProfile(input: CreateProfileInput): Promise<Profile>;

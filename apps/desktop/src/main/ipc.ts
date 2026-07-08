@@ -13,8 +13,15 @@ import {
 import { scanEnvironment, filterArtifacts, type ScanOptions } from '@cem/scanner';
 import { diagnoseEnvironment } from '@cem/diagnostics';
 import { discoverMcpServers, redactServers } from '@cem/mcp';
-import { analyzeMarkdown, buildTokenReport, type MarkdownDoc } from '@cem/markdown';
+import {
+  analyzeMarkdown,
+  analyzeSkillFile,
+  analyzeAgentFile,
+  buildTokenReport,
+  type MarkdownDoc,
+} from '@cem/markdown';
 import type { MarkdownStats } from '@cem/core';
+import { dirname } from 'node:path';
 import {
   loadProfiles,
   saveProfile,
@@ -54,6 +61,39 @@ async function tokenReport(options: ScanOptions) {
   return buildTokenReport(stats, contents);
 }
 
+async function listSkills(options: ScanOptions) {
+  const scan = await scanEnvironment({ ...options, computeTokens: false });
+  const skillFiles = filterArtifacts(scan.artifacts, { kinds: ['skill'] });
+  const mds = skillFiles.filter((a) => /^skill\.md$/i.test(a.name));
+  const out = [];
+  for (const md of mds) {
+    const dir = dirname(md.path);
+    const files = skillFiles.filter((a) => a.path.startsWith(dir)).map((a) => a.path);
+    try {
+      out.push(await analyzeSkillFile(md.path, files, md.scope));
+    } catch {
+      // skip unreadable
+    }
+  }
+  return out;
+}
+
+async function listAgents(options: ScanOptions) {
+  const scan = await scanEnvironment({ ...options, computeTokens: false });
+  const files = filterArtifacts(scan.artifacts, { kinds: ['agent'] }).filter((a) =>
+    /\.mdx?$/i.test(a.name),
+  );
+  const out = [];
+  for (const file of files) {
+    try {
+      out.push(await analyzeAgentFile(file.path, file.scope));
+    } catch {
+      // skip unreadable
+    }
+  }
+  return out;
+}
+
 /** Register all IPC handlers. Every handler is read-only unless the user acts. */
 export function registerIpcHandlers(): void {
   ipcMain.handle(IPC.scan, (_e, options: ScanOptions = {}) => scanEnvironment(options));
@@ -62,6 +102,8 @@ export function registerIpcHandlers(): void {
     redactServers(await discoverMcpServers(options)),
   );
   ipcMain.handle(IPC.tokens, (_e, options: ScanOptions = {}) => tokenReport(options));
+  ipcMain.handle(IPC.listSkills, (_e, options: ScanOptions = {}) => listSkills(options));
+  ipcMain.handle(IPC.listAgents, (_e, options: ScanOptions = {}) => listAgents(options));
 
   ipcMain.handle(IPC.listProfiles, () => loadProfiles());
   ipcMain.handle(IPC.createProfile, async (_e, input: CreateProfileInput) => {

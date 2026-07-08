@@ -27,6 +27,9 @@ All notable changes to this project are documented here. The format is based on
   `profiles`, `tokens`, `mcp`, `history`.
 - **History & audit log** — a local backup registry (`history.json`) that populates the Dashboard's
   "last backup", plus an append‑only operation audit log (`logs/audit.log`).
+- **Skills & Agents managers** — front‑matter parsing surfaces skill metadata (description, author,
+  version, dependencies, tokens) and agent metadata (model, tools, enabled state) in both the CLI
+  (`cem skills`, `cem agents`) and dedicated desktop views.
 - **Desktop app** — Electron + React UI with Dashboard, Scanner, Skills, Agents, Markdown, MCP,
   Profiles, Diagnostics, Token Analyzer, Backup, Restore and Settings; light/dark themes.
 - **`.cem` format 1.0.0** — ZIP container with `manifest.json`, `checksums.json`, `entries.json`,

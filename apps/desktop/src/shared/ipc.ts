@@ -3,6 +3,8 @@ export const IPC = {
   scan: 'cem:scan',
   diagnose: 'cem:diagnose',
   listMcp: 'cem:mcp:list',
+  listSkills: 'cem:skills:list',
+  listAgents: 'cem:agents:list',
   tokens: 'cem:tokens',
   listProfiles: 'cem:profiles:list',
   createProfile: 'cem:profiles:create',

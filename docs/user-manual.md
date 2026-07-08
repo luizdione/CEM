@@ -47,6 +47,8 @@ automatically.
 ```
 cem scan        Discover artifacts (read-only)
 cem doctor      Diagnose the environment
+cem skills      List skills with metadata (description, version, deps, tokens)
+cem agents      List agents with metadata (model, tools, enabled)
 cem tokens      Analyze token usage / waste
 cem mcp list    List MCP servers (secrets masked)
 cem profiles    Manage profiles (list|templates|create|delete)

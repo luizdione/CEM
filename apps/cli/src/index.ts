@@ -8,6 +8,7 @@ import { registerProfiles } from './commands/profiles.js';
 import { registerTokens } from './commands/tokens.js';
 import { registerMcp } from './commands/mcp.js';
 import { registerHistory } from './commands/history.js';
+import { registerSkills, registerAgents } from './commands/managers.js';
 import { CEM_VERSION } from './version.js';
 
 const program = new Command();
@@ -26,6 +27,8 @@ registerBackup(program);
 registerRestore(program);
 registerVerify(program);
 registerProfiles(program);
+registerSkills(program);
+registerAgents(program);
 registerTokens(program);
 registerMcp(program);
 registerHistory(program);

@@ -3,6 +3,7 @@ import { Sidebar, type NavGroup } from './components/Sidebar.js';
 import { cem } from './cem-api.js';
 import { Dashboard } from './views/Dashboard.js';
 import { ArtifactList } from './views/ArtifactList.js';
+import { ManagerView } from './views/ManagerView.js';
 import { McpView } from './views/McpView.js';
 import { ProfilesView } from './views/ProfilesView.js';
 import { DiagnosticsView } from './views/DiagnosticsView.js';
@@ -71,12 +72,8 @@ export function App(): JSX.Element {
       <main className="content">
         {active === 'dashboard' && <Dashboard onNavigate={setActive} />}
         {active === 'scanner' && <ArtifactList title="Scanner" subtitle="Every discovered artifact" />}
-        {active === 'skills' && (
-          <ArtifactList title="Skills" subtitle="Detected skills and instructions" kinds={['skill']} />
-        )}
-        {active === 'agents' && (
-          <ArtifactList title="Agents" subtitle="Subagent definitions" kinds={['agent']} />
-        )}
+        {active === 'skills' && <ManagerView mode="skills" />}
+        {active === 'agents' && <ManagerView mode="agents" />}
         {active === 'markdown' && (
           <ArtifactList
             title="Markdown"
