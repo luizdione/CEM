@@ -9,6 +9,7 @@ export function RestoreView(): JSX.Element {
   const [manifest, setManifest] = useState<CemManifest>();
   const [password, setPassword] = useState('');
   const [plan, setPlan] = useState<RestorePlanResponse>();
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [result, setResult] = useState<RestoreResponse>();
   const [overwrite, setOverwrite] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -29,6 +30,7 @@ export function RestoreView(): JSX.Element {
   function reset(): void {
     setManifest(undefined);
     setPlan(undefined);
+    setSelected(new Set());
     setResult(undefined);
     setError(undefined);
     setPassword('');
@@ -44,6 +46,7 @@ export function RestoreView(): JSX.Element {
         options: { overwrite },
       });
       setPlan(response);
+      setSelected(new Set(response.plan.map((p) => p.entry.archivePath)));
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -58,7 +61,7 @@ export function RestoreView(): JSX.Element {
       const response = await cem.restore({
         path,
         ...(manifest?.encryption.enabled ? { password } : {}),
-        options: { overwrite },
+        options: { overwrite, archivePaths: [...selected] },
       });
       setResult(response);
     } catch (e) {
@@ -132,8 +135,19 @@ export function RestoreView(): JSX.Element {
             )}
           </div>
 
-          <div style={{ margin: '10px 0' }}>
-            {plan.plan.length} file(s) will be restored · {conflicts} already exist.
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '10px 0' }}>
+            <span>
+              {selected.size} of {plan.plan.length} selected · {conflicts} already exist.
+            </span>
+            <button
+              className="btn"
+              onClick={() => setSelected(new Set(plan.plan.map((p) => p.entry.archivePath)))}
+            >
+              All
+            </button>
+            <button className="btn" onClick={() => setSelected(new Set())}>
+              None
+            </button>
           </div>
 
           <label style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
@@ -145,19 +159,35 @@ export function RestoreView(): JSX.Element {
             <table className="tbl">
               <thead>
                 <tr>
+                  <th style={{ width: 34 }} />
                   <th>Target</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {plan.plan.slice(0, 200).map((item) => (
-                  <tr key={item.targetPath}>
-                    <td className="mono" style={{ fontSize: 12 }}>
-                      {item.targetPath}
-                    </td>
-                    <td>{item.exists ? <Badge tone="warn">exists</Badge> : <Badge tone="good">new</Badge>}</td>
-                  </tr>
-                ))}
+                {plan.plan.slice(0, 500).map((item) => {
+                  const key = item.entry.archivePath;
+                  return (
+                    <tr key={item.targetPath}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selected.has(key)}
+                          onChange={(e) => {
+                            const next = new Set(selected);
+                            if (e.target.checked) next.add(key);
+                            else next.delete(key);
+                            setSelected(next);
+                          }}
+                        />
+                      </td>
+                      <td className="mono" style={{ fontSize: 12 }}>
+                        {item.targetPath}
+                      </td>
+                      <td>{item.exists ? <Badge tone="warn">exists</Badge> : <Badge tone="good">new</Badge>}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -165,9 +195,9 @@ export function RestoreView(): JSX.Element {
           <button
             className="btn primary"
             onClick={doRestore}
-            disabled={busy || (!plan.verification.ok)}
+            disabled={busy || !plan.verification.ok || selected.size === 0}
           >
-            {busy ? <Spinner /> : 'Restore now'}
+            {busy ? <Spinner /> : `Restore ${selected.size} file(s)`}
           </button>
           {!plan.verification.ok && (
             <span style={{ color: 'var(--bad)', marginLeft: 10 }}>

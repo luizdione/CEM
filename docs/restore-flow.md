@@ -25,7 +25,9 @@ compute targets (conflict detection) → preview → write selected files
 - If integrity verification fails, `restoreFromFile` throws `IntegrityError` and writes nothing
   (override only with an explicit `force`).
 - `dryRun` computes the full plan and conflicts without touching disk.
-- Restore is **selective**: filter by `kinds` or a custom `select` predicate.
+- Restore is **selective**: filter by `kinds`, by exact `archivePaths`, or a custom `select`
+  predicate. The desktop Restore view exposes per‑file checkboxes (with select all/none) backed by
+  `archivePaths`.
 
 ## Target resolution
 

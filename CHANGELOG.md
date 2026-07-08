@@ -36,6 +36,9 @@ All notable changes to this project are documented here. The format is based on
 - **Auto‑update with rollback safety** — the desktop app can check, download and install updates
   (electron‑updater) with explicit consent and a **pre‑update `.cem` backup**. Settings expose the
   update controls and an opt‑in launch check. Only CEM updates itself; Claude Code is never touched.
+- **UI polish** — a dedicated Plugins view, selective per‑file restore (checkboxes + select all/none,
+  backed by a new `archivePaths` restore option), and a one‑command app‑icon generator
+  (`scripts/generate-icons.mjs`).
 - **Desktop app** — Electron + React UI with Dashboard, Scanner, Skills, Agents, Markdown, MCP,
   Profiles, Diagnostics, Token Analyzer, Backup, Restore and Settings; light/dark themes.
 - **`.cem` format 1.0.0** — ZIP container with `manifest.json`, `checksums.json`, `entries.json`,

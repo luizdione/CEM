@@ -5,6 +5,7 @@ import { Dashboard } from './views/Dashboard.js';
 import { ArtifactList } from './views/ArtifactList.js';
 import { ManagerView } from './views/ManagerView.js';
 import { McpView } from './views/McpView.js';
+import { PluginsView } from './views/PluginsView.js';
 import { ProfilesView } from './views/ProfilesView.js';
 import { DiagnosticsView } from './views/DiagnosticsView.js';
 import { TokensView } from './views/TokensView.js';
@@ -30,6 +31,7 @@ const NAV: NavGroup[] = [
       { id: 'skills', label: 'Skills', icon: '✦' },
       { id: 'agents', label: 'Agents', icon: '◈' },
       { id: 'markdown', label: 'Markdown', icon: '¶' },
+      { id: 'plugins', label: 'Plugins', icon: '⧉' },
       { id: 'profiles', label: 'Profiles', icon: '☰' },
     ],
   },
@@ -82,6 +84,7 @@ export function App(): JSX.Element {
           />
         )}
         {active === 'mcp' && <McpView />}
+        {active === 'plugins' && <PluginsView />}
         {active === 'profiles' && <ProfilesView />}
         {active === 'diagnostics' && <DiagnosticsView />}
         {active === 'tokens' && <TokensView />}

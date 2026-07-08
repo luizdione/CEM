@@ -30,6 +30,7 @@ export interface BackupRequest {
 export interface RestoreRequestOptions {
   home?: string;
   kinds?: string[];
+  archivePaths?: string[];
   overwrite?: boolean;
   dryRun?: boolean;
   projectBaseDir?: string;

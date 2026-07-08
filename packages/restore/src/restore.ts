@@ -16,6 +16,8 @@ export interface RestoreOptions {
   readonly overwrite?: boolean;
   /** Restrict restore to these artifact kinds. */
   readonly kinds?: readonly ArtifactKind[];
+  /** Restrict restore to these exact archive paths (IPC-friendly selection). */
+  readonly archivePaths?: readonly string[];
   /** Additional per-entry predicate. */
   readonly select?: (entry: CemEntry) => boolean;
   /** Base directory for project-scoped files. */
@@ -61,6 +63,13 @@ export function resolveTarget(entry: CemEntry, options: RestoreOptions = {}): st
 
 function isSelected(entry: CemEntry, options: RestoreOptions): boolean {
   if (options.kinds && options.kinds.length > 0 && !options.kinds.includes(entry.kind)) return false;
+  if (
+    options.archivePaths &&
+    options.archivePaths.length > 0 &&
+    !options.archivePaths.includes(entry.archivePath)
+  ) {
+    return false;
+  }
   if (options.select && !options.select(entry)) return false;
   return true;
 }
