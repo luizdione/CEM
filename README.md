@@ -74,7 +74,7 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 
 ## 🚀 Installation
 
-### From a release (recommended for users)
+## From a release (recommended for users)
 
 Download the installer for your platform from the
 [Releases page](https://github.com/luizdione/CEM/releases):
@@ -83,7 +83,7 @@ Download the installer for your platform from the
 - **macOS** — `Claude Environment Manager-x.y.z-<arch>.dmg`
 - **Linux** — `.AppImage` or `.deb`
 
-### From source (for developers)
+## From source (for developers)
 
 # Requires Node.js >= 20 and pnpm >= 9
 git clone https://github.com
@@ -106,7 +106,7 @@ pnpm dev:desktop
 
 ```
 
-### Install the CLI globally
+## Install the CLI globally
 
 ```bash
 pnpm build:cli
