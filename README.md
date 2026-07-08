@@ -85,14 +85,14 @@ Download the installer for your platform from the
 
 ## From source (for developers)
 
-# Requires Node.js >= 20 and pnpm >= 9
+Requires Node.js >= 20 and pnpm >= 9
 git clone https://github.com
 cd CEM
 
-# ⚠️ IMPORTANT FOR PNPM v10+:
-# pnpm v10 ignores third-party build scripts by default. 
-# You MUST approve esbuild and electron scripts before installing, 
-# otherwise the desktop app bundler and binary will not be downloaded.
+⚠️ IMPORTANT FOR PNPM v10+:
+pnpm v10 ignores third-party build scripts by default. 
+You MUST approve esbuild and electron scripts before installing, 
+otherwise the desktop app bundler and binary will not be downloaded.
 pnpm approve-builds electron esbuild
 
 pnpm install
