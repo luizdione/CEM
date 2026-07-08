@@ -22,6 +22,8 @@ const api = {
   saveConfig: (config: unknown) => ipcRenderer.invoke(IPC.saveConfig, config),
   platformInfo: () => ipcRenderer.invoke(IPC.platformInfo),
   openExternal: (url: string) => ipcRenderer.invoke(IPC.openExternal, url),
+  listHistory: () => ipcRenderer.invoke(IPC.listHistory),
+  auditLog: (limit?: number) => ipcRenderer.invoke(IPC.auditLog, limit),
 };
 
 contextBridge.exposeInMainWorld('cem', api);

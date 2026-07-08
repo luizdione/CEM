@@ -60,3 +60,17 @@ cem backup --profile "My Python"    # only artifacts matching a profile
 cem backup --out ./backups --name env.cem --notes "before reinstall"
 cem export ./portable.cem           # portable export to a specific path
 ```
+
+## Registry & audit log
+
+Each successful backup is recorded in CEM's local **registry** (`history.json` in CEM's data
+directory) and updates `config.lastBackupAt` (shown on the Dashboard). Backups, restores and
+verifications are also appended to an **audit log** (`logs/audit.log`, JSON Lines). Inspect them with:
+
+```bash
+cem history           # list recorded backups
+cem history log       # recent operations
+```
+
+The registry only tracks metadata (path, size, counts, timestamps) — removing an entry never deletes
+the `.cem` file.

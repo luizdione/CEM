@@ -54,7 +54,8 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 | **Diagnostics** | Orphan references, broken MCP configs, duplicates, token bloat |
 | **Backup / Restore** | Create and restore `.cem` archives with checksums, integrity verification and selective restore |
 | **Encryption** | AES‑256‑GCM payload encryption with Argon2id key derivation + Ed25519 signing primitives |
-| **CLI** | `cem scan | doctor | backup | restore | verify | export | import | profiles | tokens | mcp` |
+| **History & Logs** | Local backup registry (populates "last backup") and an append‑only audit log of operations |
+| **CLI** | `cem scan | doctor | backup | restore | verify | export | import | profiles | tokens | mcp | history` |
 
 ## 📸 Screenshots
 

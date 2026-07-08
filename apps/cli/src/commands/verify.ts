@@ -1,5 +1,6 @@
 import type { Command } from 'commander';
 import { readManifest, readCemArchive, verifyArchive } from '@cem/restore';
+import { appendAudit } from '@cem/core';
 import { ui, printJson, formatError, resolvePassword } from '../ui.js';
 
 export function registerVerify(program: Command): void {
@@ -23,6 +24,7 @@ export function registerVerify(program: Command): void {
 
         const archive = await readCemArchive(file, password);
         const result = verifyArchive(archive);
+        await appendAudit({ action: 'verify', ok: result.ok, message: file }).catch(() => undefined);
 
         if (opts.json) {
           printJson({ manifest, verification: result });

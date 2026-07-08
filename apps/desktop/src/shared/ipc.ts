@@ -19,6 +19,8 @@ export const IPC = {
   saveConfig: 'cem:config:save',
   platformInfo: 'cem:platform',
   openExternal: 'cem:openExternal',
+  listHistory: 'cem:history:list',
+  auditLog: 'cem:history:audit',
 } as const;
 
 export type IpcChannel = (typeof IPC)[keyof typeof IPC];

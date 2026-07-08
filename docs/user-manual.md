@@ -55,6 +55,7 @@ cem export      Portable export to a path (alias of backup)
 cem verify      Verify a .cem's integrity
 cem restore     Restore a .cem
 cem import      Restore a .cem (alias)
+cem history     Backup registry & audit log (list|remove|clear|log)
 ```
 
 Common flags: `--home <dir>`, `--json`, `--password <pw>` (or `CEM_PASSWORD` env),

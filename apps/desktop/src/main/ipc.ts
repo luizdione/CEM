@@ -1,6 +1,15 @@
 import { ipcMain, dialog, shell, BrowserWindow } from 'electron';
 import { readText } from '@cem/shared';
-import { getHostInfo, loadConfig, saveConfig, type CemAppConfig } from '@cem/core';
+import {
+  getHostInfo,
+  loadConfig,
+  saveConfig,
+  recordBackup,
+  appendAudit,
+  loadHistory,
+  readAudit,
+  type CemAppConfig,
+} from '@cem/core';
 import { scanEnvironment, filterArtifacts, type ScanOptions } from '@cem/scanner';
 import { diagnoseEnvironment } from '@cem/diagnostics';
 import { discoverMcpServers, redactServers } from '@cem/mcp';
@@ -63,9 +72,29 @@ export function registerIpcHandlers(): void {
   ipcMain.handle(IPC.deleteProfile, (_e, id: string) => deleteProfile(id));
   ipcMain.handle(IPC.profileTemplates, () => PROFILE_TEMPLATES);
 
-  ipcMain.handle(IPC.backup, (_e, options: BackupEnvironmentOptions = {}) =>
-    backupEnvironment({ ...options, cemVersion: CEM_VERSION }),
-  );
+  ipcMain.handle(IPC.backup, async (_e, options: BackupEnvironmentOptions = {}) => {
+    const result = await backupEnvironment({ ...options, cemVersion: CEM_VERSION });
+    try {
+      await recordBackup({
+        id: result.manifest.id,
+        path: result.path,
+        createdAt: result.manifest.createdAt,
+        encrypted: result.encrypted,
+        fileCount: result.fileCount,
+        bytes: result.bytes,
+        formatVersion: result.manifest.formatVersion,
+        cemVersion: result.manifest.cemVersion,
+        ...(options.notes ? { notes: options.notes } : {}),
+      });
+      await appendAudit({ action: 'backup', ok: true, message: result.path });
+    } catch {
+      // registry/audit is best-effort
+    }
+    return result;
+  });
+
+  ipcMain.handle(IPC.listHistory, () => loadHistory());
+  ipcMain.handle(IPC.auditLog, (_e, limit = 100) => readAudit(limit));
 
   ipcMain.handle(IPC.readManifest, (_e, path: string) => readManifest(path));
   ipcMain.handle(IPC.verify, async (_e, { path, password }: { path: string; password?: string }) => {
@@ -85,6 +114,12 @@ export function registerIpcHandlers(): void {
     const archive = await readCemArchive(path, password);
     const verification = verifyArchive(archive);
     const result = await restoreArchive(archive, options ?? {});
+    await appendAudit({
+      action: 'restore',
+      ok: verification.ok,
+      message: path,
+      details: { restored: result.restored.length },
+    }).catch(() => undefined);
     return { verification, result };
   });
 

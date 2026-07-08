@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { scanEnvironment, discoverProjectRoots, countByKind, filterArtifacts } from './index.js';
 
 let home: string;
@@ -53,6 +53,16 @@ describe('scanEnvironment', () => {
     const result = await scanEnvironment({ home, discoverProjects: false });
     const skills = filterArtifacts(result.artifacts, { kinds: ['skill'] });
     expect(skills.every((a) => a.kind === 'skill')).toBe(true);
+  });
+
+  it('does not emit duplicates when home is a relative path', async () => {
+    // A relative home must resolve to the same absolute paths the deep sweep
+    // produces, otherwise the dedup set misses and CLAUDE.md is counted twice.
+    const relHome = relative(process.cwd(), home);
+    const result = await scanEnvironment({ home: relHome, discoverProjects: false });
+    const paths = result.artifacts.map((a) => a.path);
+    expect(new Set(paths).size).toBe(paths.length);
+    expect(paths.filter((p) => p.endsWith('/CLAUDE.md'))).toHaveLength(1);
   });
 });
 

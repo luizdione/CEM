@@ -1,4 +1,4 @@
-import { basename } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import {
   type Logger,
@@ -63,7 +63,7 @@ export interface ScanOptions {
  * locations. This is strictly READ-ONLY — nothing is created, moved or deleted.
  */
 export async function scanEnvironment(options: ScanOptions = {}): Promise<ScanResult> {
-  const home = options.home ?? homedir();
+  const home = resolve(options.home ?? homedir());
   const logger = options.logger ?? silentLogger;
   const computeTokens = options.computeTokens ?? true;
   const computeHashes = options.computeHashes ?? false;
@@ -225,7 +225,7 @@ async function buildArtifact(
  * recorded. Missing/malformed files yield an empty list.
  */
 export async function discoverProjectRoots(home: string = homedir()): Promise<string[]> {
-  const claudeJson = `${home}/.claude.json`;
+  const claudeJson = join(resolve(home), '.claude.json');
   if (!(await pathExists(claudeJson))) return [];
   try {
     const parsed = await readJson<{ projects?: Record<string, unknown> }>(claudeJson);

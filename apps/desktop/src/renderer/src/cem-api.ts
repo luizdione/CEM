@@ -1,4 +1,6 @@
 import type {
+  AuditEntry,
+  BackupRecord,
   CemAppConfig,
   CemManifest,
   HostInfo,
@@ -75,6 +77,8 @@ export interface CemApi {
   saveConfig(config: CemAppConfig): Promise<void>;
   platformInfo(): Promise<{ host: HostInfo; cemVersion: string }>;
   openExternal(url: string): Promise<void>;
+  listHistory(): Promise<BackupRecord[]>;
+  auditLog(limit?: number): Promise<AuditEntry[]>;
 }
 
 declare global {

@@ -7,6 +7,7 @@ import { registerVerify } from './commands/verify.js';
 import { registerProfiles } from './commands/profiles.js';
 import { registerTokens } from './commands/tokens.js';
 import { registerMcp } from './commands/mcp.js';
+import { registerHistory } from './commands/history.js';
 import { CEM_VERSION } from './version.js';
 
 const program = new Command();
@@ -27,6 +28,7 @@ registerVerify(program);
 registerProfiles(program);
 registerTokens(program);
 registerMcp(program);
+registerHistory(program);
 
 program.parseAsync(process.argv).catch((error: unknown) => {
   console.error(error instanceof Error ? error.message : String(error));

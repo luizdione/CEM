@@ -24,7 +24,9 @@ All notable changes to this project are documented here. The format is based on
 - **`@cem/backup`** — `.cem` archive planner and writer with checksums and optional encryption.
 - **`@cem/restore`** — read, verify and selectively restore `.cem` archives.
 - **CLI (`cem`)** — `scan`, `doctor`, `backup`, `export`, `restore`, `import`, `verify`,
-  `profiles`, `tokens`, `mcp`.
+  `profiles`, `tokens`, `mcp`, `history`.
+- **History & audit log** — a local backup registry (`history.json`) that populates the Dashboard's
+  "last backup", plus an append‑only operation audit log (`logs/audit.log`).
 - **Desktop app** — Electron + React UI with Dashboard, Scanner, Skills, Agents, Markdown, MCP,
   Profiles, Diagnostics, Token Analyzer, Backup, Restore and Settings; light/dark themes.
 - **`.cem` format 1.0.0** — ZIP container with `manifest.json`, `checksums.json`, `entries.json`,
