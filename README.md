@@ -85,10 +85,16 @@ Download the installer for your platform from the
 
 ### From source (for developers)
 
-```bash
 # Requires Node.js >= 20 and pnpm >= 9
-git clone https://github.com/luizdione/CEM.git
+git clone https://github.com
 cd CEM
+
+# ⚠️ IMPORTANT FOR PNPM v10+:
+# pnpm v10 ignores third-party build scripts by default. 
+# You MUST approve esbuild and electron scripts before installing, 
+# otherwise the desktop app bundler and binary will not be downloaded.
+pnpm approve-builds electron esbuild
+
 pnpm install
 pnpm build          # build all packages + the CLI
 
@@ -97,6 +103,7 @@ node apps/cli/dist/index.js --help
 
 # Launch the desktop app in dev mode
 pnpm dev:desktop
+
 ```
 
 ### Install the CLI globally
@@ -199,6 +206,23 @@ No — it is a fast heuristic for *relative* comparison. CEM does not call any A
 API.
 
 See [`docs/faq.md`](./docs/faq.md) for more.
+
+## 🛠️ Troubleshooting (Resolução de Problemas)
+
+### `pnpm dev:desktop` fails with "Error: Electron uninstall" or Esbuild errors
+If you are using **pnpm v10 or higher**, `electron-vite` cannot find the Electron binary or `esbuild` scripts fail to run, showing errors like `Error: Electron uninstall`.
+
+**Solution:**
+Approve the build scripts and force reinstall:
+```bash
+pnpm approve-builds electron esbuild
+pnpm install --force
+pnpm dev:desktop
+```
+
+### `pnpm` or `cem` command not recognized in Windows PowerShell
+If `pnpm` is not recognized, install it globally: `npm install -g pnpm`.
+If `cem` command fails, ensure your global npm prefix path (usually `AppData\Roaming\npm`) is added to your Windows `PATH` environment variable.
 
 ## 🗺️ Roadmap
 
