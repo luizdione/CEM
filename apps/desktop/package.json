@@ -20,6 +20,7 @@
     "clean": "rm -rf out dist-electron release"
   },
   "dependencies": {
+    "electron-updater": "^6.3.9",
     "@cem/backup": "workspace:*",
     "@cem/core": "workspace:*",
     "@cem/crypto": "workspace:*",

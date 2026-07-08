@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { CemAppConfig } from '@cem/core';
-import { cem } from '../cem-api.js';
+import { cem, type UpdateStatus } from '../cem-api.js';
 import { PageHead, Card, Badge, Spinner } from '../components/common.js';
 
 export function SettingsView({
@@ -12,10 +12,22 @@ export function SettingsView({
 }): JSX.Element {
   const [config, setConfig] = useState<CemAppConfig>();
   const [saved, setSaved] = useState(false);
+  const [update, setUpdate] = useState<UpdateStatus>();
 
   useEffect(() => {
     cem.getConfig().then(setConfig).catch(() => undefined);
+    const unsubscribe = cem.onUpdateStatus(setUpdate);
+    return unsubscribe;
   }, []);
+
+  const checkUpdate = (): void => {
+    setUpdate({ state: 'checking' });
+    cem.updateCheck().then(setUpdate).catch(() => setUpdate({ state: 'error' }));
+  };
+  const downloadUpdate = (): void => {
+    cem.updateDownload().then(setUpdate).catch(() => setUpdate({ state: 'error' }));
+  };
+  const installUpdate = (): void => void cem.updateInstall();
 
   async function save(next: CemAppConfig): Promise<void> {
     setConfig(next);
@@ -91,6 +103,53 @@ export function SettingsView({
       </div>
 
       <Card style={{ marginTop: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <h3 style={{ margin: 0 }}>Updates</h3>
+          <button className="btn" onClick={checkUpdate}>
+            Check for updates
+          </button>
+          {update?.state === 'available' && (
+            <button className="btn primary" onClick={downloadUpdate}>
+              Download {update.version}
+            </button>
+          )}
+          {update?.state === 'downloaded' && (
+            <button className="btn primary" onClick={installUpdate}>
+              Restart &amp; install
+            </button>
+          )}
+          <span style={{ color: 'var(--text-dim)' }}>{describeUpdate(update)}</span>
+        </div>
+
+        {config && (
+          <div style={{ marginTop: 12 }}>
+            <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <input
+                type="checkbox"
+                checked={config.autoUpdate}
+                onChange={(e) => save({ ...config, autoUpdate: e.target.checked })}
+              />
+              Check for updates automatically on launch
+            </label>
+            <label style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
+              <input
+                type="checkbox"
+                checked={config.backupBeforeUpdate}
+                onChange={(e) => save({ ...config, backupBeforeUpdate: e.target.checked })}
+              />
+              Create a backup before applying an update (rollback safety)
+            </label>
+          </div>
+        )}
+        {update?.preUpdateBackup && (
+          <div className="note" style={{ marginTop: 10 }}>
+            Pre‑update backup saved to <span className="mono">{update.preUpdateBackup}</span>. If an
+            update misbehaves, reinstall the previous version and import this <span className="mono">.cem</span>.
+          </div>
+        )}
+      </Card>
+
+      <Card style={{ marginTop: 14 }}>
         <h3 style={{ marginTop: 0 }}>Privacy &amp; compliance</h3>
         <p style={{ color: 'var(--text-dim)' }}>
           CEM collects <strong>no telemetry</strong>. It reads only documented, user-owned Claude
@@ -104,4 +163,26 @@ export function SettingsView({
       </Card>
     </div>
   );
+}
+
+function describeUpdate(status: UpdateStatus | undefined): string {
+  if (!status) return '';
+  switch (status.state) {
+    case 'dev':
+      return 'Updates are only available in the installed app.';
+    case 'checking':
+      return 'Checking…';
+    case 'available':
+      return `Version ${status.version ?? ''} is available.`;
+    case 'none':
+      return 'You are on the latest version.';
+    case 'downloading':
+      return `Downloading… ${status.percent ?? 0}%`;
+    case 'downloaded':
+      return 'Update ready to install.';
+    case 'error':
+      return `Update error: ${status.message ?? 'unknown'}`;
+    default:
+      return '';
+  }
 }

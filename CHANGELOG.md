@@ -33,6 +33,9 @@ All notable changes to this project are documented here. The format is based on
 - **MCP manager write actions** — export/import `mcp.json`, merge into a config file
   (non‑destructive), enable/disable and remove servers, from the CLI (`cem mcp …`) and the desktop
   MCP view. CEM only edits your own declarative config files and never runs an MCP server.
+- **Auto‑update with rollback safety** — the desktop app can check, download and install updates
+  (electron‑updater) with explicit consent and a **pre‑update `.cem` backup**. Settings expose the
+  update controls and an opt‑in launch check. Only CEM updates itself; Claude Code is never touched.
 - **Desktop app** — Electron + React UI with Dashboard, Scanner, Skills, Agents, Markdown, MCP,
   Profiles, Diagnostics, Token Analyzer, Backup, Restore and Settings; light/dark themes.
 - **`.cem` format 1.0.0** — ZIP container with `manifest.json`, `checksums.json`, `entries.json`,

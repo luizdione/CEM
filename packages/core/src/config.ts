@@ -11,6 +11,10 @@ export interface CemAppConfig {
   readonly includeProjectsByDefault: boolean;
   readonly encryptionByDefault: boolean;
   readonly scanRoots: readonly string[];
+  /** Automatically check for updates on launch (never installs without consent). */
+  readonly autoUpdate: boolean;
+  /** Create a `.cem` backup before applying an update (rollback safety). */
+  readonly backupBeforeUpdate: boolean;
   readonly lastBackupAt?: string;
   /** CEM never collects telemetry; this flag exists only to make that explicit. */
   readonly telemetry: false;
@@ -24,6 +28,8 @@ export function defaultConfig(env?: PathEnv): CemAppConfig {
     includeProjectsByDefault: false,
     encryptionByDefault: false,
     scanRoots: [],
+    autoUpdate: false,
+    backupBeforeUpdate: true,
     telemetry: false,
   };
 }

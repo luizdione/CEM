@@ -13,6 +13,13 @@ files:
 extraMetadata:
   main: out/main/index.js
 
+# Update feed. electron-updater reads the release assets published by the
+# Release workflow to offer in-app updates.
+publish:
+  provider: github
+  owner: luizdione
+  repo: CEM
+
 # Associate the .cem file type with the app on every platform.
 fileAssociations:
   - ext: cem

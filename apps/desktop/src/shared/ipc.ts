@@ -27,6 +27,12 @@ export const IPC = {
   openExternal: 'cem:openExternal',
   listHistory: 'cem:history:list',
   auditLog: 'cem:history:audit',
+  updateCheck: 'cem:update:check',
+  updateDownload: 'cem:update:download',
+  updateInstall: 'cem:update:install',
+  updatePreBackup: 'cem:update:preBackup',
+  /** Event channel: main → renderer update status pushes. */
+  updateStatus: 'cem:update:status',
 } as const;
 
 export type IpcChannel = (typeof IPC)[keyof typeof IPC];

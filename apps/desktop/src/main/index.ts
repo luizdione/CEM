@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { registerIpcHandlers } from './ipc.js';
+import { registerUpdater, maybeAutoCheck } from './updater.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -41,7 +42,9 @@ function createWindow(): void {
 
 app.whenReady().then(() => {
   registerIpcHandlers();
+  registerUpdater();
   createWindow();
+  void maybeAutoCheck();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

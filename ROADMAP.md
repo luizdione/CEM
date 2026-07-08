@@ -34,9 +34,11 @@ input is welcome — open a discussion or issue to propose changes.
 ## 🧪 Ongoing
 
 - Broader test coverage (UI, performance, migration matrices).
-- Auto‑update with rollback and pre‑update backup.
 - Localization (starting with English and Portuguese).
 - Accessibility polish.
+
+> ✅ Auto‑update with pre‑update backup and a documented rollback path shipped in 1.0.0
+> (see [`docs/updates.md`](./docs/updates.md)).
 
 ## ❌ Explicit non‑goals
 

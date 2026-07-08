@@ -30,6 +30,15 @@ const api = {
   openExternal: (url: string) => ipcRenderer.invoke(IPC.openExternal, url),
   listHistory: () => ipcRenderer.invoke(IPC.listHistory),
   auditLog: (limit?: number) => ipcRenderer.invoke(IPC.auditLog, limit),
+  updateCheck: () => ipcRenderer.invoke(IPC.updateCheck),
+  updateDownload: () => ipcRenderer.invoke(IPC.updateDownload),
+  updateInstall: () => ipcRenderer.invoke(IPC.updateInstall),
+  updatePreBackup: () => ipcRenderer.invoke(IPC.updatePreBackup),
+  onUpdateStatus: (cb: (status: unknown) => void) => {
+    const listener = (_e: unknown, status: unknown): void => cb(status);
+    ipcRenderer.on(IPC.updateStatus, listener);
+    return () => ipcRenderer.removeListener(IPC.updateStatus, listener);
+  },
 };
 
 contextBridge.exposeInMainWorld('cem', api);

@@ -36,6 +36,14 @@ export interface RestoreRequestOptions {
   externalBaseDir?: string;
 }
 
+export interface UpdateStatus {
+  state: 'dev' | 'checking' | 'available' | 'none' | 'downloading' | 'downloaded' | 'error';
+  version?: string;
+  percent?: number;
+  message?: string;
+  preUpdateBackup?: string;
+}
+
 export interface McpActionResult {
   ok: boolean;
   reason?: string;
@@ -98,6 +106,11 @@ export interface CemApi {
   openExternal(url: string): Promise<void>;
   listHistory(): Promise<BackupRecord[]>;
   auditLog(limit?: number): Promise<AuditEntry[]>;
+  updateCheck(): Promise<UpdateStatus>;
+  updateDownload(): Promise<UpdateStatus>;
+  updateInstall(): Promise<{ ok: boolean }>;
+  updatePreBackup(): Promise<{ path?: string }>;
+  onUpdateStatus(cb: (status: UpdateStatus) => void): () => void;
 }
 
 declare global {

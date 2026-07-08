@@ -11,6 +11,7 @@
 | [Profiles](./profiles.md) | Activation profiles and matching rules |
 | [Plugins](./plugins.md) | Plugin detection and the extensibility model |
 | [Restore Flow](./restore-flow.md) | Step‑by‑step restore pipeline |
+| [Updates & Rollback](./updates.md) | In‑app auto‑update with pre‑update backup |
 | [Import Flow](./import-flow.md) | Migrating an environment to a new machine |
 | [User Manual](./user-manual.md) | End‑user guide (desktop + CLI) |
 | [FAQ](./faq.md) | Frequently asked questions |
