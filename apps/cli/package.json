@@ -27,6 +27,7 @@
     "@cem/restore": "workspace:*",
     "@cem/scanner": "workspace:*",
     "@cem/shared": "workspace:*",
+    "@cem/sync": "workspace:*",
     "commander": "^12.1.0",
     "picocolors": "^1.1.1"
   },

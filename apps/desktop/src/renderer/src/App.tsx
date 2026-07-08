@@ -12,6 +12,7 @@ import { TokensView } from './views/TokensView.js';
 import { BackupView } from './views/BackupView.js';
 import { RestoreView } from './views/RestoreView.js';
 import { HistoryView } from './views/HistoryView.js';
+import { SyncView } from './views/SyncView.js';
 import { SettingsView } from './views/SettingsView.js';
 
 const NAV: NavGroup[] = [
@@ -41,6 +42,7 @@ const NAV: NavGroup[] = [
       { id: 'backup', label: 'Backup', icon: '⤓' },
       { id: 'restore', label: 'Restore', icon: '⤒' },
       { id: 'history', label: 'History', icon: '⟲' },
+      { id: 'sync', label: 'Sync', icon: '⇅' },
     ],
   },
   { group: 'System', items: [{ id: 'settings', label: 'Settings', icon: '⚙' }] },
@@ -91,6 +93,7 @@ export function App(): JSX.Element {
         {active === 'backup' && <BackupView />}
         {active === 'restore' && <RestoreView />}
         {active === 'history' && <HistoryView />}
+        {active === 'sync' && <SyncView />}
         {active === 'settings' && <SettingsView theme={theme} onThemeChange={setTheme} />}
       </main>
     </div>

@@ -39,6 +39,9 @@ All notable changes to this project are documented here. The format is based on
 - **UI polish** — a dedicated Plugins view, selective per‑file restore (checkboxes + select all/none,
   backed by a new `archivePaths` restore option), and a one‑command app‑icon generator
   (`scripts/generate-icons.mjs`).
+- **Optional Git sync** — `@cem/sync` with a Git provider (init/status/commit/push/pull/clone),
+  a `cem sync` CLI command and a desktop Sync view. Nothing is ever pushed automatically; CEM does
+  no credential handling. Other providers (Drive/OneDrive/Dropbox/NAS) can plug into the same shape.
 - **Desktop app** — Electron + React UI with Dashboard, Scanner, Skills, Agents, Markdown, MCP,
   Profiles, Diagnostics, Token Analyzer, Backup, Restore and Settings; light/dark themes.
 - **`.cem` format 1.0.0** — ZIP container with `manifest.json`, `checksums.json`, `entries.json`,

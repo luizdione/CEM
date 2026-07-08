@@ -21,8 +21,10 @@ input is welcome — open a discussion or issue to propose changes.
 
 ## 🔭 1.2 — Sync (opt‑in, never automatic)
 
-- Optional sync targets: Git/GitHub, Google Drive, OneDrive, Dropbox, NAS, local server.
-- Explicit, user‑initiated push/pull only — no background uploads.
+- ✅ **Git/GitHub sync shipped** (`@cem/sync`, `cem sync`, desktop Sync view) — explicit push/pull
+  only, no background uploads, no credential handling. See [`docs/sync.md`](./docs/sync.md).
+- Additional providers behind the same `SyncProvider` shape: Google Drive, OneDrive, Dropbox, NAS,
+  local server.
 - Signed archives (Ed25519) with verify‑on‑import.
 
 ## 🧩 1.3 — Plugins & extensibility

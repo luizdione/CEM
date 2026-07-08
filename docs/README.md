@@ -12,6 +12,7 @@
 | [Plugins](./plugins.md) | Plugin detection and the extensibility model |
 | [Restore Flow](./restore-flow.md) | Step‑by‑step restore pipeline |
 | [Updates & Rollback](./updates.md) | In‑app auto‑update with pre‑update backup |
+| [Synchronization](./sync.md) | Optional, explicit Git sync of backups |
 | [Import Flow](./import-flow.md) | Migrating an environment to a new machine |
 | [User Manual](./user-manual.md) | End‑user guide (desktop + CLI) |
 | [FAQ](./faq.md) | Frequently asked questions |

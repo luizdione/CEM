@@ -8,6 +8,7 @@ import {
   appendAudit,
   loadHistory,
   readAudit,
+  getCemBackupsDir,
   type CemAppConfig,
 } from '@cem/core';
 import { scanEnvironment, filterArtifacts, type ScanOptions } from '@cem/scanner';
@@ -39,6 +40,7 @@ import {
   type CreateProfileInput,
 } from '@cem/profiles';
 import { backupEnvironment, type BackupEnvironmentOptions } from '@cem/backup';
+import { gitProvider } from '@cem/sync';
 import {
   readManifest,
   readCemArchive,
@@ -203,6 +205,21 @@ export function registerIpcHandlers(): void {
 
   ipcMain.handle(IPC.listHistory, () => loadHistory());
   ipcMain.handle(IPC.auditLog, (_e, limit = 100) => readAudit(limit));
+
+  ipcMain.handle(IPC.syncStatus, () => gitProvider.status(getCemBackupsDir()));
+  ipcMain.handle(IPC.syncInit, (_e, remote?: string) =>
+    gitProvider.init(getCemBackupsDir(), remote ? { remote } : {}),
+  );
+  ipcMain.handle(IPC.syncPush, async (_e, { message, push }: { message?: string; push?: boolean }) => {
+    const result = await gitProvider.commitAndPush(getCemBackupsDir(), message || 'CEM backup sync', {
+      push: push !== false,
+    });
+    await appendAudit({ action: 'export', ok: result.ok, message: `git sync: ${result.message}` }).catch(
+      () => undefined,
+    );
+    return result;
+  });
+  ipcMain.handle(IPC.syncPull, () => gitProvider.pull(getCemBackupsDir()));
 
   ipcMain.handle(IPC.readManifest, (_e, path: string) => readManifest(path));
   ipcMain.handle(IPC.verify, async (_e, { path, password }: { path: string; password?: string }) => {

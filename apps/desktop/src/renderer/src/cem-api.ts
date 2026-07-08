@@ -16,6 +16,7 @@ import type { EnvironmentDiagnosis } from '@cem/diagnostics';
 import type { TokenReport } from '@cem/markdown';
 import type { BackupResult } from '@cem/backup';
 import type { VerifyResult, RestorePlanItem, RestoreResult } from '@cem/restore';
+import type { SyncStatus, SyncResult } from '@cem/sync';
 
 export interface BackupRequest {
   outDir?: string;
@@ -112,6 +113,10 @@ export interface CemApi {
   updateInstall(): Promise<{ ok: boolean }>;
   updatePreBackup(): Promise<{ path?: string }>;
   onUpdateStatus(cb: (status: UpdateStatus) => void): () => void;
+  syncStatus(): Promise<SyncStatus>;
+  syncInit(remote?: string): Promise<SyncResult>;
+  syncPush(args: { message?: string; push?: boolean }): Promise<SyncResult>;
+  syncPull(): Promise<SyncResult>;
 }
 
 declare global {

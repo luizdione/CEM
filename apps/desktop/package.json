@@ -30,7 +30,8 @@
     "@cem/profiles": "workspace:*",
     "@cem/restore": "workspace:*",
     "@cem/scanner": "workspace:*",
-    "@cem/shared": "workspace:*"
+    "@cem/shared": "workspace:*",
+    "@cem/sync": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",
