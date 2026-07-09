@@ -74,43 +74,54 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 
 ## 🚀 Installation
 
-## From a release (recommended for users)
+### From a release (recommended for users)
 
-Download the installer for your platform from the
-[Releases page](https://github.com/luizdione/CEM/releases):
+Download the installer for your platform from the Releases page:
 
 - **Windows** — `Claude Environment Manager-Setup-x.y.z.exe`
 - **macOS** — `Claude Environment Manager-x.y.z-<arch>.dmg`
 - **Linux** — `.AppImage` or `.deb`
 
-## From source (for developers)
+### From source (for developers)
 
-Requires Node.js >= 20 and pnpm >= 9
+> 📋 **Requirements:** Node.js ≥ 20 and pnpm ≥ 9
+
+#### 1. Clone and enter the repository
+```bash
 git clone https://github.com
 cd CEM
-
-⚠️ IMPORTANT FOR PNPM v10+:
-pnpm v10 ignores third-party build scripts by default. 
-You MUST approve esbuild and electron scripts before installing, 
-otherwise the desktop app bundler and binary will not be downloaded.
-pnpm approve-builds electron esbuild
-
-pnpm install
-pnpm build          # build all packages + the CLI
-
-# Run the CLI
-node apps/cli/dist/index.js --help
-
-# Launch the desktop app in dev mode
-pnpm dev:desktop
-
 ```
 
-## Install the CLI globally
+#### 2. Configure build scripts permissions (Crucial for pnpm v10+)
+pnpm v10+ ignores third-party build scripts by default. You **must** approve `electron` and `esbuild` before installing, otherwise the binaries and bundlers will not download.
+```bash
+pnpm approve-builds electron esbuild
+```
+
+#### 3. Install dependencies and build the monorepo
+```bash
+pnpm install
+pnpm build
+```
+
+#### 4. Run the application
+To test the **CLI**:
+```bash
+node apps/cli/dist/index.js --help
+```
+
+To launch the **Desktop App** in development mode:
+```bash
+pnpm dev:desktop
+```
+
+### Install the CLI globally
+
+If you want to use the `cem` command anywhere on your machine, build and install it globally:
 
 ```bash
 pnpm build:cli
-npm i -g ./apps/cli     # exposes the `cem` command
+npm i -g ./apps/cli
 cem --help
 ```
 
