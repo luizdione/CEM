@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { registerScan } from './commands/scan.js';
 import { registerDoctor } from './commands/doctor.js';
+import { registerFix } from './commands/fix.js';
 import { registerBackup } from './commands/backup.js';
 import { registerRestore } from './commands/restore.js';
 import { registerVerify } from './commands/verify.js';
@@ -24,6 +25,7 @@ program
 
 registerScan(program);
 registerDoctor(program);
+registerFix(program);
 registerBackup(program);
 registerRestore(program);
 registerVerify(program);

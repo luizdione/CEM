@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/luizdione/CEM/actions/workflows/ci.yml/badge.svg)](https://github.com/luizdione/CEM/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Semantic Versioning](https://img.shields.io/badge/semver-1.0.0-green.svg)](https://semver.org)
+[![Semantic Versioning](https://img.shields.io/badge/semver-1.1.0-green.svg)](https://semver.org)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
 
 </div>
@@ -52,6 +52,7 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 | **Token Analyzer** | Tokens per file/category, large‑file detection, content‑overlap (redundancy) detection, waste report |
 | **Profiles** | Activate a subset of config/docs per workflow (Development, Research, Bioinformatics, Python, Next.js, Docker, …) |
 | **Diagnostics** | Orphan references, broken MCP configs, duplicates, token bloat |
+| **Solve problems** | One click proposes the best fix per finding; you **accept or ignore** each — with automatic backups and audit logging (`cem fix`) |
 | **Backup / Restore** | Create and restore `.cem` archives with checksums, integrity verification and selective restore |
 | **Encryption** | AES‑256‑GCM payload encryption with Argon2id key derivation + Ed25519 signing primitives |
 | **History & Logs** | Local backup registry (populates "last backup") and an append‑only audit log of operations |

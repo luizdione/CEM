@@ -1,6 +1,6 @@
 {
   "name": "@cem/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Core domain model for CEM: Claude Code location catalog, token estimation, .cem manifest and app config.",
   "type": "module",
   "license": "MIT",
@@ -13,7 +13,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

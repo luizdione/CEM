@@ -47,6 +47,7 @@ automatically.
 ```
 cem scan        Discover artifacts (read-only)
 cem doctor      Diagnose the environment
+cem fix         Propose fixes and accept/ignore each (--dry-run, -y)
 cem skills      List skills with metadata (description, version, deps, tokens)
 cem agents      List agents with metadata (model, tools, enabled)
 cem tokens      Analyze token usage / waste
@@ -58,6 +59,7 @@ cem verify      Verify a .cem's integrity
 cem restore     Restore a .cem
 cem import      Restore a .cem (alias)
 cem history     Backup registry & audit log (list|remove|clear|log)
+cem sync        Optional Git sync of backups (status|init|push|pull|clone)
 ```
 
 Common flags: `--home <dir>`, `--json`, `--password <pw>` (or `CEM_PASSWORD` env),

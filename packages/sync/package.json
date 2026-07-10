@@ -1,6 +1,6 @@
 {
   "name": "@cem/sync",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Optional, explicit synchronization of CEM backups (Git provider). Never sends data automatically.",
   "type": "module",
   "license": "MIT",
@@ -13,7 +13,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

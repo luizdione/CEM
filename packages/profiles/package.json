@@ -1,6 +1,6 @@
 {
   "name": "@cem/profiles",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Profile manager for CEM: create, persist and apply activation profiles that scope artifacts.",
   "type": "module",
   "license": "MIT",
@@ -13,7 +13,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

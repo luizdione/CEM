@@ -5,6 +5,8 @@ import { IPC } from '../shared/ipc.js';
 const api = {
   scan: (options?: unknown) => ipcRenderer.invoke(IPC.scan, options),
   diagnose: (options?: unknown) => ipcRenderer.invoke(IPC.diagnose, options),
+  remediationPropose: (options?: unknown) => ipcRenderer.invoke(IPC.remediationPropose, options),
+  remediationApply: (remediation: unknown) => ipcRenderer.invoke(IPC.remediationApply, remediation),
   listMcp: (options?: unknown) => ipcRenderer.invoke(IPC.listMcp, options),
   mcpExport: (options?: unknown) => ipcRenderer.invoke(IPC.mcpExport, options),
   mcpImport: () => ipcRenderer.invoke(IPC.mcpImport),

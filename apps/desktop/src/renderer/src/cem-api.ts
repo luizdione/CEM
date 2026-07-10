@@ -12,7 +12,7 @@ import type {
   SkillMetadata,
 } from '@cem/core';
 import type { CreateProfileInput } from '@cem/profiles';
-import type { EnvironmentDiagnosis } from '@cem/diagnostics';
+import type { EnvironmentDiagnosis, Remediation, RemediationResult } from '@cem/diagnostics';
 import type { TokenReport } from '@cem/markdown';
 import type { BackupResult } from '@cem/backup';
 import type { VerifyResult, RestorePlanItem, RestoreResult } from '@cem/restore';
@@ -75,6 +75,8 @@ export interface RestoreResponse {
 export interface CemApi {
   scan(options?: Record<string, unknown>): Promise<ScanResult>;
   diagnose(options?: Record<string, unknown>): Promise<EnvironmentDiagnosis>;
+  remediationPropose(options?: Record<string, unknown>): Promise<Remediation[]>;
+  remediationApply(remediation: Remediation): Promise<RemediationResult>;
   listMcp(options?: Record<string, unknown>): Promise<McpServerDefinition[]>;
   mcpExport(options?: Record<string, unknown>): Promise<McpActionResult>;
   mcpImport(): Promise<McpActionResult>;

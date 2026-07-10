@@ -2,6 +2,8 @@
 export const IPC = {
   scan: 'cem:scan',
   diagnose: 'cem:diagnose',
+  remediationPropose: 'cem:remediation:propose',
+  remediationApply: 'cem:remediation:apply',
   listMcp: 'cem:mcp:list',
   mcpExport: 'cem:mcp:export',
   mcpImport: 'cem:mcp:import',

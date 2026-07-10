@@ -1,6 +1,6 @@
 {
   "name": "@cem/backup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Backup engine for CEM: plans artifacts into the .cem archive format with checksums and optional encryption.",
   "type": "module",
   "license": "MIT",
@@ -13,7 +13,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

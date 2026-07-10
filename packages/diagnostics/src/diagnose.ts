@@ -75,6 +75,7 @@ export function runDiagnostics(input: DiagnosticInput): DiagnosticReport {
         category: 'mcp',
         message: `MCP server "${server.name}" uses stdio but declares no command.`,
         path: server.sourcePath,
+        details: { server: server.name },
       });
     }
     if ((server.transport === 'http' || server.transport === 'sse') && !server.url) {
@@ -84,6 +85,7 @@ export function runDiagnostics(input: DiagnosticInput): DiagnosticReport {
         category: 'mcp',
         message: `MCP server "${server.name}" uses ${server.transport} but declares no url.`,
         path: server.sourcePath,
+        details: { server: server.name },
       });
     }
     if (server.transport === 'unknown') {

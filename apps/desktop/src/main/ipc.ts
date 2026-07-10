@@ -12,7 +12,12 @@ import {
   type CemAppConfig,
 } from '@cem/core';
 import { scanEnvironment, filterArtifacts, type ScanOptions } from '@cem/scanner';
-import { diagnoseEnvironment } from '@cem/diagnostics';
+import {
+  diagnoseEnvironment,
+  proposeRemediations,
+  applyRemediation,
+  type Remediation,
+} from '@cem/diagnostics';
 import {
   discoverMcpServers,
   redactServers,
@@ -51,7 +56,7 @@ import {
 } from '@cem/restore';
 import { IPC } from '../shared/ipc.js';
 
-const CEM_VERSION = '1.0.0';
+const CEM_VERSION = '1.1.0';
 
 async function tokenReport(options: ScanOptions) {
   const scan = await scanEnvironment({ ...options, computeTokens: true });
@@ -108,6 +113,13 @@ async function listAgents(options: ScanOptions) {
 export function registerIpcHandlers(): void {
   ipcMain.handle(IPC.scan, (_e, options: ScanOptions = {}) => scanEnvironment(options));
   ipcMain.handle(IPC.diagnose, (_e, options: ScanOptions = {}) => diagnoseEnvironment(options));
+  ipcMain.handle(IPC.remediationPropose, async (_e, options: ScanOptions = {}) => {
+    const diagnosis = await diagnoseEnvironment(options);
+    return proposeRemediations(diagnosis.report);
+  });
+  ipcMain.handle(IPC.remediationApply, (_e, remediation: Remediation) =>
+    applyRemediation(remediation),
+  );
   ipcMain.handle(IPC.listMcp, async (_e, options = {}) =>
     redactServers(await discoverMcpServers(options)),
   );

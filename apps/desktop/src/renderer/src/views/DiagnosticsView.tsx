@@ -1,23 +1,118 @@
+import { useState } from 'react';
+import type { Remediation, RemediationResult } from '@cem/diagnostics';
 import { cem } from '../cem-api.js';
 import { PageHead, Card, StatCard, Badge, Spinner, useAsync } from '../components/common.js';
 
 export function DiagnosticsView(): JSX.Element {
   const { data, loading, error, reload } = useAsync(() => cem.diagnose({}), []);
+  const [remediations, setRemediations] = useState<Remediation[]>();
+  const [proposing, setProposing] = useState(false);
+  const [results, setResults] = useState<Record<string, RemediationResult>>({});
+  const [ignored, setIgnored] = useState<Set<string>>(new Set());
+  const [busyId, setBusyId] = useState<string>();
+
+  const solve = async (): Promise<void> => {
+    setProposing(true);
+    setResults({});
+    setIgnored(new Set());
+    try {
+      setRemediations(await cem.remediationPropose({}));
+    } catch {
+      setRemediations([]);
+    } finally {
+      setProposing(false);
+    }
+  };
+
+  const accept = async (rem: Remediation): Promise<void> => {
+    setBusyId(rem.id);
+    try {
+      const result = await cem.remediationApply(rem);
+      setResults((r) => ({ ...r, [rem.id]: result }));
+      reload();
+    } finally {
+      setBusyId(undefined);
+    }
+  };
+
+  const ignore = (rem: Remediation): void => setIgnored((s) => new Set(s).add(rem.id));
 
   return (
     <div>
       <PageHead
         title="Diagnostics"
-        subtitle="Detect orphans, broken MCP configs, duplicates and token bloat"
+        subtitle="Detect problems and resolve them with per-fix approval"
         actions={
-          <button className="btn" onClick={reload} disabled={loading}>
-            {loading ? <Spinner /> : 'Run again'}
-          </button>
+          <>
+            <button className="btn primary" onClick={solve} disabled={proposing || loading}>
+              {proposing ? <Spinner /> : 'Solve problems'}
+            </button>
+            <button className="btn" onClick={reload} disabled={loading}>
+              {loading ? <Spinner /> : 'Run again'}
+            </button>
+          </>
         }
       />
 
+      <div className="note" style={{ marginBottom: 14 }}>
+        Fixes only ever touch your own Claude Code files. Every deletion is backed up to CEM’s trash
+        first, and you approve each change. CEM never modifies Claude Code or runs system commands.
+      </div>
+
       {error && <Card style={{ borderColor: 'var(--bad)' }}>Could not diagnose: {error}</Card>}
       {loading && <Card>Running diagnostics…</Card>}
+
+      {remediations && (
+        <Card style={{ marginBottom: 14 }}>
+          <h3 style={{ marginTop: 0 }}>Proposed fixes ({remediations.length})</h3>
+          {remediations.length === 0 ? (
+            <p style={{ color: 'var(--text-dim)' }}>Nothing to fix — your environment looks healthy.</p>
+          ) : (
+            remediations.map((rem) => {
+              const result = results[rem.id];
+              const isIgnored = ignored.has(rem.id);
+              return (
+                <div
+                  key={rem.id}
+                  style={{ borderTop: '1px solid var(--border)', padding: '12px 0', opacity: isIgnored ? 0.5 : 1 }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <strong>{rem.title}</strong>
+                    {rem.automatic ? (
+                      rem.destructive ? <Badge tone="warn">auto · deletes</Badge> : <Badge tone="good">auto</Badge>
+                    ) : (
+                      <Badge>manual</Badge>
+                    )}
+                  </div>
+                  <p style={{ color: 'var(--text-dim)', margin: '6px 0' }}>{rem.detail}</p>
+
+                  {result ? (
+                    <div>
+                      <Badge tone={result.applied ? 'good' : undefined}>
+                        {result.applied ? 'applied' : 'no change'}
+                      </Badge>{' '}
+                      <span style={{ color: 'var(--text-dim)' }}>{result.message}</span>
+                    </div>
+                  ) : isIgnored ? (
+                    <Badge>ignored</Badge>
+                  ) : rem.automatic ? (
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn primary" disabled={busyId === rem.id} onClick={() => accept(rem)}>
+                        {busyId === rem.id ? <Spinner /> : 'Accept'}
+                      </button>
+                      <button className="btn" onClick={() => ignore(rem)}>
+                        Ignore
+                      </button>
+                    </div>
+                  ) : (
+                    <Badge>no automatic action</Badge>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </Card>
+      )}
 
       {data && (
         <>
@@ -25,11 +120,7 @@ export function DiagnosticsView(): JSX.Element {
             <StatCard
               label="Status"
               value={
-                data.report.summary.healthy ? (
-                  <Badge tone="good">Healthy</Badge>
-                ) : (
-                  <Badge tone="bad">Issues</Badge>
-                )
+                data.report.summary.healthy ? <Badge tone="good">Healthy</Badge> : <Badge tone="bad">Issues</Badge>
               }
             />
             <StatCard label="Errors" value={data.report.summary.errors} />
