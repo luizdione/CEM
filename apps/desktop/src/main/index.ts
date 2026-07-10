@@ -40,17 +40,33 @@ function createWindow(): void {
   }
 }
 
-app.whenReady().then(() => {
-  registerIpcHandlers();
-  registerUpdater();
-  createWindow();
-  void maybeAutoCheck();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+// Only one CEM instance may run at a time: concurrent instances fight over the
+// same user-data/GPU-cache directories on Windows ("Unable to move the cache:
+// access denied"). A second launch just focuses the existing window.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    const window = BrowserWindow.getAllWindows()[0];
+    if (window) {
+      if (window.isMinimized()) window.restore();
+      window.show();
+      window.focus();
+    }
   });
-});
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
+  app.whenReady().then(() => {
+    registerIpcHandlers();
+    registerUpdater();
+    createWindow();
+    void maybeAutoCheck();
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+  });
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit();
+  });
+}
