@@ -50,7 +50,8 @@ cem doctor      Diagnose the environment
 cem fix         Propose fixes and accept/ignore each (--dry-run, -y)
 cem skills      List skills with metadata (description, version, deps, tokens)
 cem agents      List agents with metadata (model, tools, enabled)
-cem tokens      Analyze token usage / waste
+cem tokens      Analyze token usage / waste (static, per file)
+cem usage       Temporal token usage per session/project (--window 24h|3d|7d|30d)
 cem mcp list    List MCP servers (secrets masked)
 cem profiles    Manage profiles (list|templates|create|delete)
 cem backup      Create a .cem backup

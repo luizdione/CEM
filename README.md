@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/luizdione/CEM/actions/workflows/ci.yml/badge.svg)](https://github.com/luizdione/CEM/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Semantic Versioning](https://img.shields.io/badge/semver-1.1.0-green.svg)](https://semver.org)
+[![Semantic Versioning](https://img.shields.io/badge/semver-1.2.0-green.svg)](https://semver.org)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
 
 </div>
@@ -50,13 +50,14 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 | **MCP Manager** | Lists MCP servers from `~/.claude.json`, `settings.json`, `.mcp.json`, `claude_desktop_config.json`; masks secrets |
 | **Skills / Agents / Markdown** | Inspect skills (description, author, version, dependencies, tokens) and agents (model, tools, enabled state) via front‑matter parsing; browse `CLAUDE.md`‑style docs |
 | **Token Analyzer** | Tokens per file/category, large‑file detection, content‑overlap (redundancy) detection, waste report |
+| **Token Usage (temporal)** | Real consumption over **24h / 3d / 7d / 30d** per session & project from local transcripts: context‑window reading vs cache building vs output; main session vs workflow agents; git/GitHub activity; skill/agent launches — with statistical improvement proposals (branch heavy sessions, shrink heavy `CLAUDE.md`/skills, batch pushes) |
 | **Profiles** | Activate a subset of config/docs per workflow (Development, Research, Bioinformatics, Python, Next.js, Docker, …) |
 | **Diagnostics** | Orphan references, broken MCP configs, duplicates, token bloat |
 | **Solve problems** | One click proposes the best fix per finding; you **accept or ignore** each — with automatic backups and audit logging (`cem fix`) |
 | **Backup / Restore** | Create and restore `.cem` archives with checksums, integrity verification and selective restore |
 | **Encryption** | AES‑256‑GCM payload encryption with Argon2id key derivation + Ed25519 signing primitives |
 | **History & Logs** | Local backup registry (populates "last backup") and an append‑only audit log of operations |
-| **CLI** | `cem scan | doctor | backup | restore | verify | export | import | profiles | skills | agents | tokens | mcp | history` |
+| **CLI** | `cem scan | doctor | fix | backup | restore | verify | export | import | profiles | skills | agents | tokens | usage | mcp | history | sync` |
 
 ## 📸 Screenshots
 

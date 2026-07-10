@@ -17,6 +17,7 @@ import type { TokenReport } from '@cem/markdown';
 import type { BackupResult } from '@cem/backup';
 import type { VerifyResult, RestorePlanItem, RestoreResult } from '@cem/restore';
 import type { SyncStatus, SyncResult } from '@cem/sync';
+import type { UsageReport, UsageWindow } from '@cem/usage';
 
 export interface BackupRequest {
   outDir?: string;
@@ -85,6 +86,7 @@ export interface CemApi {
   listSkills(options?: Record<string, unknown>): Promise<SkillMetadata[]>;
   listAgents(options?: Record<string, unknown>): Promise<AgentMetadata[]>;
   tokens(options?: Record<string, unknown>): Promise<TokenReport>;
+  usageReport(args?: { window?: UsageWindow }): Promise<UsageReport>;
   listProfiles(): Promise<Profile[]>;
   createProfile(input: CreateProfileInput): Promise<Profile>;
   deleteProfile(id: string): Promise<boolean>;

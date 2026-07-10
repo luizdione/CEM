@@ -1,6 +1,6 @@
 {
   "name": "@cem/cli",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Command-line interface for the Claude Environment Manager (cem).",
   "type": "module",
   "license": "MIT",
@@ -30,6 +30,7 @@
     "@cem/scanner": "workspace:*",
     "@cem/shared": "workspace:*",
     "@cem/sync": "workspace:*",
+    "@cem/usage": "workspace:*",
     "commander": "^12.1.0",
     "picocolors": "^1.1.1"
   },

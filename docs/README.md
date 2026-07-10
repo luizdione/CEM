@@ -8,6 +8,7 @@
 | [Scanner](./scanner.md) | How artifacts are discovered (read‑only) |
 | [MCP Manager](./mcp.md) | Discover, inspect and edit MCP server configs |
 | [Remediation](./remediation.md) | "Solve problems": propose fixes, accept/ignore each |
+| [Token Usage](./usage.md) | Temporal consumption (24h/3d/7d/30d) per session/project + proposals |
 | [Backup System](./backup-system.md) | How a backup is planned and written |
 | [Profiles](./profiles.md) | Activation profiles and matching rules |
 | [Plugins](./plugins.md) | Plugin detection and the extensibility model |

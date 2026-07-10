@@ -12,6 +12,7 @@ export const IPC = {
   listSkills: 'cem:skills:list',
   listAgents: 'cem:agents:list',
   tokens: 'cem:tokens',
+  usageReport: 'cem:usage:report',
   listProfiles: 'cem:profiles:list',
   createProfile: 'cem:profiles:create',
   deleteProfile: 'cem:profiles:delete',

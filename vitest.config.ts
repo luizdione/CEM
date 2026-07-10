@@ -19,6 +19,7 @@ export default defineConfig({
       '@cem/backup': r('./packages/backup/src/index.ts'),
       '@cem/restore': r('./packages/restore/src/index.ts'),
       '@cem/sync': r('./packages/sync/src/index.ts'),
+      '@cem/usage': r('./packages/usage/src/index.ts'),
     },
   },
   test: {

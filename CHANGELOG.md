@@ -6,6 +6,25 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-07-10
+
+### Added
+
+- **Temporal Token Usage analytics** (`@cem/usage`) — real token consumption over **24h / 3d / 7d /
+  30d** windows, parsed read‑only from Claude Code's local session transcripts
+  (`~/.claude/projects/**/*.jsonl`), de‑duplicated and grouped **per session and per project**.
+  Consumption is split two ways: by **activity** (main session vs workflow agents/sidechains vs
+  git/GitHub operations vs skill/agent launches) and by **token type** (context‑window reading vs
+  cache building vs output). Active projects are correlated with the config files they load
+  (`CLAUDE.md`, skills, agents) so heavy files are surfaced with their recurring cost.
+- **Improvement proposals** — statistical outlier analysis (z‑scores across sessions) plus domain
+  heuristics recommend: branching/restarting context‑heavy sessions, shrinking heavy config files,
+  batching git pushes, and flag context churn and agent‑delegation patterns, with estimated savings.
+- **Desktop “Token Usage” tab** — window selector, stacked timeline chart (hourly/daily buckets),
+  per‑session and per‑project stacked category bars, and the proposals list. The **Dashboard**
+  gains a “Token usage by project — last 7 days” bar chart.
+- **CLI `cem usage`** — the same report in the terminal (`--window`, `--json`).
+
 ## [1.1.0] - 2026-07-10
 
 ### Added

@@ -15,7 +15,8 @@
       "@cem/diagnostics": ["./packages/diagnostics/src/index.ts"],
       "@cem/backup": ["./packages/backup/src/index.ts"],
       "@cem/restore": ["./packages/restore/src/index.ts"],
-      "@cem/sync": ["./packages/sync/src/index.ts"]
+      "@cem/sync": ["./packages/sync/src/index.ts"],
+      "@cem/usage": ["./packages/usage/src/index.ts"]
     }
   },
   "include": ["packages/*/src/**/*.ts", "apps/cli/src/**/*.ts", "tests/**/*.ts"],

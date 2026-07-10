@@ -4,13 +4,14 @@ import { formatBytes, formatNumber, formatDate, countBy } from '../format.js';
 
 export function Dashboard({ onNavigate }: { onNavigate: (id: string) => void }): JSX.Element {
   const { data, loading, error, reload } = useAsync(async () => {
-    const [diag, platform, profiles, config] = await Promise.all([
+    const [diag, platform, profiles, config, usage] = await Promise.all([
       cem.diagnose({}),
       cem.platformInfo(),
       cem.listProfiles(),
       cem.getConfig(),
+      cem.usageReport({ window: '7d' }).catch(() => undefined),
     ]);
-    return { diag, platform, profiles, config };
+    return { diag, platform, profiles, config, usage };
   }, []);
 
   return (
@@ -89,6 +90,27 @@ export function Dashboard({ onNavigate }: { onNavigate: (id: string) => void }):
                       ))}
                   </Card>
                 </div>
+
+                {data.usage && data.usage.projects.length > 0 && (
+                  <Card style={{ marginTop: 14 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h3 style={{ margin: 0 }}>Token usage by project — last 7 days</h3>
+                      <button className="btn" onClick={() => onNavigate('usage')}>
+                        Open Token Usage
+                      </button>
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                      {data.usage.projects.slice(0, 6).map((p) => (
+                        <Bar
+                          key={p.key}
+                          label={p.project.split(/[/\\]/).filter(Boolean).slice(-1)[0] ?? p.project}
+                          value={p.total}
+                          max={data.usage!.projects[0]?.total ?? 1}
+                        />
+                      ))}
+                    </div>
+                  </Card>
+                )}
 
                 <Card style={{ marginTop: 14 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>

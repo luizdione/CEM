@@ -15,6 +15,7 @@ const api = {
   listSkills: (options?: unknown) => ipcRenderer.invoke(IPC.listSkills, options),
   listAgents: (options?: unknown) => ipcRenderer.invoke(IPC.listAgents, options),
   tokens: (options?: unknown) => ipcRenderer.invoke(IPC.tokens, options),
+  usageReport: (args?: unknown) => ipcRenderer.invoke(IPC.usageReport, args),
   listProfiles: () => ipcRenderer.invoke(IPC.listProfiles),
   createProfile: (input: unknown) => ipcRenderer.invoke(IPC.createProfile, input),
   deleteProfile: (id: string) => ipcRenderer.invoke(IPC.deleteProfile, id),

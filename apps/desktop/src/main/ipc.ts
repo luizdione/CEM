@@ -46,6 +46,7 @@ import {
 } from '@cem/profiles';
 import { backupEnvironment, type BackupEnvironmentOptions } from '@cem/backup';
 import { gitProvider } from '@cem/sync';
+import { buildUsageReport, type UsageWindow } from '@cem/usage';
 import {
   readManifest,
   readCemArchive,
@@ -56,7 +57,7 @@ import {
 } from '@cem/restore';
 import { IPC } from '../shared/ipc.js';
 
-const CEM_VERSION = '1.1.0';
+const CEM_VERSION = '1.2.0';
 
 async function tokenReport(options: ScanOptions) {
   const scan = await scanEnvironment({ ...options, computeTokens: true });
@@ -182,6 +183,10 @@ export function registerIpcHandlers(): void {
     },
   );
   ipcMain.handle(IPC.tokens, (_e, options: ScanOptions = {}) => tokenReport(options));
+  ipcMain.handle(IPC.usageReport, async (_e, { window }: { window?: UsageWindow } = {}) => {
+    const scan = await scanEnvironment({ computeTokens: true });
+    return buildUsageReport({ ...(window ? { window } : {}), artifacts: scan.artifacts });
+  });
   ipcMain.handle(IPC.listSkills, (_e, options: ScanOptions = {}) => listSkills(options));
   ipcMain.handle(IPC.listAgents, (_e, options: ScanOptions = {}) => listAgents(options));
 

@@ -10,6 +10,7 @@ import { registerTokens } from './commands/tokens.js';
 import { registerMcp } from './commands/mcp.js';
 import { registerHistory } from './commands/history.js';
 import { registerSync } from './commands/sync.js';
+import { registerUsage } from './commands/usage.js';
 import { registerSkills, registerAgents } from './commands/managers.js';
 import { CEM_VERSION } from './version.js';
 
@@ -33,6 +34,7 @@ registerProfiles(program);
 registerSkills(program);
 registerAgents(program);
 registerTokens(program);
+registerUsage(program);
 registerMcp(program);
 registerHistory(program);
 registerSync(program);
