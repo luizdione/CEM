@@ -1,5 +1,6 @@
 import { homedir } from 'node:os';
 import { dirname, resolve } from 'node:path';
+// resolve() is used to normalize `home` to an absolute path.
 import { pathExists, readText } from '@cem/shared';
 import type { McpServerDefinition, ScanResult } from '@cem/core';
 import { scanEnvironment, discoverProjectRoots, type ScanOptions } from '@cem/scanner';
@@ -32,7 +33,7 @@ const MARKDOWN_KINDS = new Set(['markdown', 'memory', 'prompt', 'template', 'ski
 export async function diagnoseEnvironment(
   options: DiagnoseEnvironmentOptions = {},
 ): Promise<EnvironmentDiagnosis> {
-  const home = options.home ?? homedir();
+  const home = resolve(options.home ?? homedir());
 
   const explicitRoots = options.projectRoots ?? [];
   const discovered =

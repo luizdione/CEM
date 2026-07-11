@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import type { ArtifactKind } from '@cem/core';
+import { type ArtifactKind, appendAudit } from '@cem/core';
 import {
   readManifest,
   readCemArchive,
@@ -97,6 +97,12 @@ async function runRestore(file: string, opts: RestoreCliOptions): Promise<void> 
   }
 
   const result = await restoreArchive(archive, restoreOptions);
+  await appendAudit({
+    action: 'restore',
+    ok: true,
+    message: file,
+    details: { restored: result.restored.length, conflicts: result.conflicts.length },
+  }).catch(() => undefined);
 
   if (opts.json) {
     printJson({ ok: true, verification, ...result });

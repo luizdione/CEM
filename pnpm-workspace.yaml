@@ -1,3 +1,10 @@
 packages:
   - 'packages/*'
   - 'apps/*'
+
+# Allow these dependencies to run their install scripts (pnpm >= 10 reads this
+# here, not from package.json). Electron's postinstall downloads the runtime
+# binary — without it the desktop app cannot launch.
+onlyBuiltDependencies:
+  - electron
+  - esbuild

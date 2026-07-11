@@ -1,6 +1,6 @@
 import { basename, dirname } from 'node:path';
 import type { Command } from 'commander';
-import type { ScannedArtifact } from '@cem/core';
+import { type ScannedArtifact, recordBackup, appendAudit } from '@cem/core';
 import { createLogger } from '@cem/shared';
 import { backupEnvironment } from '@cem/backup';
 import { loadProfiles, matchesProfile } from '@cem/profiles';
@@ -61,6 +61,30 @@ async function runBackup(opts: BackupCliOptions, defaults: { encrypt: boolean })
     cemVersion: CEM_VERSION,
     logger,
   });
+
+  // Record the backup in CEM's own registry and audit log (non-fatal on error).
+  try {
+    await recordBackup({
+      id: result.manifest.id,
+      path: result.path,
+      createdAt: result.manifest.createdAt,
+      encrypted: result.encrypted,
+      fileCount: result.fileCount,
+      bytes: result.bytes,
+      formatVersion: result.manifest.formatVersion,
+      cemVersion: result.manifest.cemVersion,
+      ...(opts.notes ? { notes: opts.notes } : {}),
+      ...(profileName ? { profile: profileName } : {}),
+    });
+    await appendAudit({
+      action: 'backup',
+      ok: true,
+      message: result.path,
+      details: { files: result.fileCount, encrypted: result.encrypted },
+    });
+  } catch {
+    // registry/audit is best-effort; never fail a successful backup because of it
+  }
 
   if (opts.json) {
     printJson({ path: result.path, ...result.manifest, skipped: result.skipped });

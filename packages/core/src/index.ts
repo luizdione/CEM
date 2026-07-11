@@ -7,3 +7,5 @@ export * from './host.js';
 export * from './tokens.js';
 export * from './manifest.js';
 export * from './config.js';
+export * from './audit.js';
+export * from './history.js';

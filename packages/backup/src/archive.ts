@@ -74,7 +74,7 @@ export async function createBackup(
     let bytes: Buffer;
     try {
       bytes = await readFile(file.sourcePath);
-    } catch (error) {
+    } catch {
       logger.warn('Skipping unreadable file', { path: file.sourcePath });
       skipped.push(file.sourcePath);
       continue;

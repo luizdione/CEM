@@ -1,4 +1,5 @@
 import { homedir } from 'node:os';
+import { resolve } from 'node:path';
 import type { ScannedArtifact } from '@cem/core';
 import { getCemBackupsDir } from '@cem/core';
 import { scanEnvironment, discoverProjectRoots, type ScanOptions } from '@cem/scanner';
@@ -22,7 +23,7 @@ export interface BackupEnvironmentOptions
 export async function backupEnvironment(
   options: BackupEnvironmentOptions = {},
 ): Promise<BackupResult> {
-  const home = options.home ?? homedir();
+  const home = resolve(options.home ?? homedir());
   const discovered =
     (options.discoverProjects ?? true) ? await discoverProjectRoots(home) : [];
   const projectRoots = [...new Set([...(options.projectRoots ?? []), ...discovered])];

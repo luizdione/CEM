@@ -1,0 +1,62 @@
+appId: com.luizdione.cem
+productName: Claude Environment Manager
+copyright: Copyright © 2025 Luiz Dione and CEM Contributors
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - out/**
+  - '!**/*.map'
+
+extraMetadata:
+  main: out/main/index.js
+
+# Update feed. electron-updater reads the release assets published by the
+# Release workflow to offer in-app updates.
+publish:
+  provider: github
+  owner: luizdione
+  repo: CEM
+
+# Associate the .cem file type with the app on every platform.
+fileAssociations:
+  - ext: cem
+    name: CEM Archive
+    description: Claude Environment Manager Archive
+    role: Editor
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+  maintainer: Luiz Dione <luiz.dione.melo@gmail.com>
+  synopsis: Backup, restore and migrate Claude Code environments
+
+mac:
+  target:
+    - dmg
+  category: public.app-category.developer-tools
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  # Friendly installer name for non-technical users (Windows 10/11 x64).
+  artifactName: install_CEM-${version}.${ext}
+
+nsis:
+  # Assisted (non one-click) installer: the user picks the install directory.
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  # Desktop icon is created; the Start Menu (app list) entry is also created.
+  # Taskbar pinning cannot be automated by installers on Windows 10/11 — the
+  # user pins from the Start Menu entry (right-click → Pin to taskbar).
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Claude Environment Manager
+  deleteAppDataOnUninstall: false
