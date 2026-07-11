@@ -12,6 +12,10 @@ files:
 
 extraMetadata:
   main: out/main/index.js
+  # The workspace package name is scoped (@cem/desktop). Linux packaging
+  # derives file and dpkg package names from it, and neither "/" nor spaces
+  # are valid there (electron-builder#2963) — so ship under a flat name.
+  name: cem-desktop
 
 # Update feed. electron-updater reads the release assets published by the
 # Release workflow to offer in-app updates.
