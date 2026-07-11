@@ -87,6 +87,13 @@ export interface CemApi {
   listAgents(options?: Record<string, unknown>): Promise<AgentMetadata[]>;
   tokens(options?: Record<string, unknown>): Promise<TokenReport>;
   usageReport(args?: { window?: UsageWindow }): Promise<UsageReport>;
+  planExport(request: {
+    title: string;
+    body: string;
+    suggestedName?: string;
+    targetDir?: string;
+    launch?: boolean;
+  }): Promise<{ ok: boolean; path?: string; launched: boolean; message: string }>;
   listProfiles(): Promise<Profile[]>;
   createProfile(input: CreateProfileInput): Promise<Profile>;
   deleteProfile(id: string): Promise<boolean>;

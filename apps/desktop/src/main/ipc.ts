@@ -56,8 +56,9 @@ import {
   type RestoreOptions,
 } from '@cem/restore';
 import { IPC } from '../shared/ipc.js';
+import { exportPlan, type PlanExportRequest } from './plan.js';
 
-const CEM_VERSION = '1.2.0';
+const CEM_VERSION = '1.3.0';
 
 async function tokenReport(options: ScanOptions) {
   const scan = await scanEnvironment({ ...options, computeTokens: true });
@@ -186,6 +187,13 @@ export function registerIpcHandlers(): void {
   ipcMain.handle(IPC.usageReport, async (_e, { window }: { window?: UsageWindow } = {}) => {
     const scan = await scanEnvironment({ computeTokens: true });
     return buildUsageReport({ ...(window ? { window } : {}), artifacts: scan.artifacts });
+  });
+  ipcMain.handle(IPC.planExport, async (_e, request: PlanExportRequest) => {
+    const result = await exportPlan(request);
+    await appendAudit({ action: 'export', ok: result.ok, message: `plan → ${result.path ?? 'cancelled'}` }).catch(
+      () => undefined,
+    );
+    return result;
   });
   ipcMain.handle(IPC.listSkills, (_e, options: ScanOptions = {}) => listSkills(options));
   ipcMain.handle(IPC.listAgents, (_e, options: ScanOptions = {}) => listAgents(options));

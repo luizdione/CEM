@@ -23,6 +23,55 @@ const CATEGORY_LABELS: Record<string, string> = {
 export function UsageView(): JSX.Element {
   const [window, setWindow] = useState<UsageWindow>('7d');
   const { data, loading, error, reload } = useAsync(() => cem.usageReport({ window }), [window]);
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [exportNote, setExportNote] = useState<string>();
+  const [exporting, setExporting] = useState(false);
+
+  const togglePick = (id: string, checked: boolean): void => {
+    setPicked((s) => {
+      const next = new Set(s);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
+  const sendToClaude = async (): Promise<void> => {
+    if (!data) return;
+    const chosen = data.recommendations.filter((r) => picked.has(r.id));
+    if (chosen.length === 0) return;
+    setExporting(true);
+    setExportNote(undefined);
+    try {
+      const body = [
+        `Analysis window: last ${data.window} · total ${data.totalTokens.toLocaleString()} tokens across ${data.sessions.length} session(s) and ${data.projects.length} project(s).`,
+        '',
+        '## Selected improvement proposals',
+        '',
+        ...chosen.map(
+          (r, i) =>
+            `### ${i + 1}. ${r.title}\n\n- Severity: ${r.severity}${r.estimatedSavings ? `\n- Estimated savings: ~${r.estimatedSavings.toLocaleString()} tokens` : ''}\n\n${r.detail}`,
+        ),
+        '',
+        '## Instructions for Claude Code',
+        '',
+        'Apply each proposal above to this environment. For file-shrinking items, edit the referenced file directly; for session-branching items, summarize what a fresh session should carry over. Ask before deleting anything.',
+      ].join('\n');
+      const result = await cem.planExport({
+        title: 'CEM — Token usage improvement plan',
+        body,
+        suggestedName: 'CEM-USAGE-PLAN.md',
+        ...(data.projects[0]?.project?.startsWith('/') || /^[A-Za-z]:[\\/]/.test(data.projects[0]?.project ?? '')
+          ? { targetDir: data.projects[0]!.project }
+          : {}),
+      });
+      setExportNote(result.message);
+    } catch (e) {
+      setExportNote(e instanceof Error ? e.message : String(e));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const maxBucket = Math.max(1, ...(data?.series.map((b) => b.total) ?? [1]));
 
@@ -90,13 +139,34 @@ export function UsageView(): JSX.Element {
           </div>
 
           <Card style={{ marginTop: 14 }}>
-            <h3 style={{ marginTop: 0 }}>Improvement proposals</h3>
-            <p style={{ color: 'var(--text-dim)', fontSize: 12.5, marginTop: 0 }}>
-              Produced by statistical outlier analysis over your sessions (z-scores) plus domain heuristics — fully local and explainable.
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <h3 style={{ margin: 0 }}>Improvement proposals</h3>
+              <label style={{ display: 'flex', gap: 6, alignItems: 'center', fontSize: 13 }}>
+                <input
+                  type="checkbox"
+                  checked={data.recommendations.length > 0 && data.recommendations.every((r) => picked.has(r.id))}
+                  onChange={(e) =>
+                    setPicked(e.target.checked ? new Set(data.recommendations.map((r) => r.id)) : new Set())
+                  }
+                />
+                Select all
+              </label>
+              <button className="btn primary" disabled={exporting || picked.size === 0} onClick={sendToClaude}>
+                {exporting ? <Spinner /> : `Send ${picked.size} to Claude Code`}
+              </button>
+            </div>
+            <p style={{ color: 'var(--text-dim)', fontSize: 12.5, margin: '8px 0 0' }}>
+              Produced by statistical outlier analysis over your sessions (z-scores) plus domain heuristics — fully local and explainable. Select proposals and export them as a Markdown plan that opens directly in Claude Code.
             </p>
+            {exportNote && <div className="note" style={{ marginTop: 10 }}>{exportNote}</div>}
             {data.recommendations.map((rec) => (
-              <div key={rec.id} style={{ borderTop: '1px solid var(--border)', padding: '10px 0' }}>
+              <div key={rec.id} style={{ borderTop: '1px solid var(--border)', padding: '10px 0', marginTop: 8 }}>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <input
+                    type="checkbox"
+                    checked={picked.has(rec.id)}
+                    onChange={(e) => togglePick(rec.id, e.target.checked)}
+                  />
                   <Badge tone={rec.severity === 'important' ? 'warn' : rec.severity === 'suggestion' ? 'good' : undefined}>
                     {rec.severity}
                   </Badge>

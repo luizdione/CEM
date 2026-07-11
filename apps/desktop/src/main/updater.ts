@@ -5,7 +5,7 @@ import { backupEnvironment } from '@cem/backup';
 import { IPC } from '../shared/ipc.js';
 
 const { autoUpdater } = electronUpdater;
-const CEM_VERSION = '1.2.0';
+const CEM_VERSION = '1.3.0';
 
 export interface UpdateStatus {
   state: 'dev' | 'checking' | 'available' | 'none' | 'downloading' | 'downloaded' | 'error';

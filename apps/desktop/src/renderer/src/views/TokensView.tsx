@@ -1,9 +1,47 @@
+import { useState } from 'react';
 import { cem } from '../cem-api.js';
 import { PageHead, Card, StatCard, Bar, Spinner, useAsync } from '../components/common.js';
 import { formatNumber } from '../format.js';
 
 export function TokensView(): JSX.Element {
   const { data, loading, error, reload } = useAsync(() => cem.tokens({}), []);
+  const [exporting, setExporting] = useState(false);
+  const [exportNote, setExportNote] = useState<string>();
+
+  const sendToClaude = async (): Promise<void> => {
+    if (!data) return;
+    setExporting(true);
+    setExportNote(undefined);
+    try {
+      const body = [
+        `Static analysis of ${data.totalFiles} document(s), ~${data.totalTokens.toLocaleString()} tokens total, ~${data.estimatedWastedTokens.toLocaleString()} estimated as redundant.`,
+        '',
+        '## Recommendations',
+        '',
+        ...data.recommendations.map((r, i) => `${i + 1}. ${r}`),
+        '',
+        data.largeFiles.length > 0 ? '## Heaviest files (shrink candidates)\n' : '',
+        ...data.largeFiles.slice(0, 15).map((f) => `- \`${f.path}\` — ~${f.tokens.toLocaleString()} tokens, ${f.lines} lines`),
+        '',
+        data.overlaps.length > 0 ? '## Overlapping content (deduplicate)\n' : '',
+        ...data.overlaps.slice(0, 15).map((o) => `- ${(o.similarity * 100).toFixed(0)}% similar: \`${o.a}\` ↔ \`${o.b}\``),
+        '',
+        '## Instructions for Claude Code',
+        '',
+        'Work through the recommendations above: trim or split the heavy files and merge the overlapping documents into single referenced sources. Show me a diff before saving each change.',
+      ].join('\n');
+      const result = await cem.planExport({
+        title: 'CEM — Token analyzer cleanup plan',
+        body,
+        suggestedName: 'CEM-TOKENS-PLAN.md',
+      });
+      setExportNote(result.message);
+    } catch (e) {
+      setExportNote(e instanceof Error ? e.message : String(e));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <div>
@@ -58,7 +96,13 @@ export function TokensView(): JSX.Element {
           </div>
 
           <Card style={{ marginTop: 14 }}>
-            <h3 style={{ marginTop: 0 }}>Recommendations</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <h3 style={{ margin: 0 }}>Recommendations</h3>
+              <button className="btn primary" disabled={exporting} onClick={sendToClaude}>
+                {exporting ? <Spinner /> : 'Send to Claude Code'}
+              </button>
+            </div>
+            {exportNote && <div className="note" style={{ marginTop: 10 }}>{exportNote}</div>}
             {data.recommendations.map((rec, i) => (
               <p key={i} style={{ color: 'var(--text-dim)', margin: '6px 0' }}>
                 • {rec}

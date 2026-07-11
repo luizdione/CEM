@@ -6,6 +6,25 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-07-11
+
+### Added
+
+- **Claude Code integration ("Send to Claude Code")** — the Token Analyzer's recommendations and
+  the Token Usage improvement proposals (with per‑item checkboxes) can be exported as a Markdown
+  action plan; CEM then launches the documented `claude` CLI in a new terminal pre‑loaded with the
+  plan so Claude continues the modifications. Falls back to revealing the exported file when the
+  CLI is not installed. Integration uses only public, supported mechanisms.
+- **Bulk "Solve problems"** — the Diagnostics tab gains per‑fix checkboxes with *Select all*
+  (automatic fixes pre‑selected) and a one‑click **Solve N selected** that applies them in
+  sequence, keeping the existing per‑fix Accept/Ignore, trash backups and audit logging.
+- **Friendly installers** — the Windows installer is now published as
+  `install_CEM-<version>.exe` (Windows 10/11 x64, assisted install: choose the directory, desktop
+  icon, Start Menu entry; taskbar pinning is done from the Start Menu per Windows policy), macOS
+  gets `.dmg` (Electron does not run on iOS/iPadOS), and Linux gains a one‑line command‑line
+  installer (`scripts/install-linux.sh`) that fetches the latest AppImage and registers a desktop
+  entry.
+
 ## [1.2.0] - 2026-07-10
 
 ### Added

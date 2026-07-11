@@ -13,7 +13,7 @@ are thin adapters over that logic.
                         │ IPC                    │ direct calls
         ┌───────────────▼───────────────────────▼───────┐
         │  backup · restore · diagnostics · profiles     │  Use cases
-        │  scanner · markdown · mcp                       │
+        │  scanner · markdown · mcp · usage · sync        │
         └───────────────┬───────────────────────┬───────┘
                         │                        │
         ┌───────────────▼───────┐   ┌────────────▼───────┐
@@ -36,9 +36,11 @@ are thin adapters over that logic.
 | `@cem/markdown` | shared, core | Token/line stats, references, overlap |
 | `@cem/mcp` | shared, core | MCP discovery, normalization, redaction |
 | `@cem/profiles` | shared, core | Profile CRUD, matching, templates |
-| `@cem/diagnostics` | shared, core, scanner, mcp, markdown | Health checks, token rollups |
+| `@cem/diagnostics` | shared, core, scanner, mcp, markdown | Health checks, token rollups, fix remediation |
 | `@cem/backup` | shared, core, crypto, scanner | `.cem` planning & writing |
 | `@cem/restore` | shared, core, crypto | `.cem` reading, verification, restore |
+| `@cem/usage` | shared, core | Temporal token-usage analytics from local transcripts |
+| `@cem/sync` | shared, core | Optional, explicit Git sync of backups |
 
 The graph is acyclic. Because dependencies only point "inward", any package can be extracted and
 reused independently, and new modules can be added without modifying the core.

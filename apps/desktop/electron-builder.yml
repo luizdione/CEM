@@ -43,12 +43,20 @@ mac:
 
 win:
   target:
-    - nsis
-  artifactName: ${productName}-Setup-${version}.${ext}
+    - target: nsis
+      arch: [x64]
+  # Friendly installer name for non-technical users (Windows 10/11 x64).
+  artifactName: install_CEM-${version}.${ext}
 
 nsis:
+  # Assisted (non one-click) installer: the user picks the install directory.
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  createDesktopShortcut: true
+  # Desktop icon is created; the Start Menu (app list) entry is also created.
+  # Taskbar pinning cannot be automated by installers on Windows 10/11 — the
+  # user pins from the Start Menu entry (right-click → Pin to taskbar).
+  createDesktopShortcut: always
   createStartMenuShortcut: true
+  shortcutName: Claude Environment Manager
+  deleteAppDataOnUninstall: false

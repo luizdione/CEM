@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/luizdione/CEM/actions/workflows/ci.yml/badge.svg)](https://github.com/luizdione/CEM/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Semantic Versioning](https://img.shields.io/badge/semver-1.2.0-green.svg)](https://semver.org)
+[![Semantic Versioning](https://img.shields.io/badge/semver-1.3.0-green.svg)](https://semver.org)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
 
 </div>
@@ -61,11 +61,9 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 
 ## 📸 Screenshots
 
-> _Placeholders — replace with real captures once the app is running._
-
-| Dashboard | Token Analyzer | Restore |
-| --- | --- | --- |
-| ![Dashboard](./assets/screenshot-dashboard.png) | ![Tokens](./assets/screenshot-tokens.png) | ![Restore](./assets/screenshot-restore.png) |
+> Screenshots are being prepared. Run `pnpm dev:desktop` to explore the app: Dashboard with the
+> per‑project token‑usage chart, the Token Usage tab (24h/3d/7d/30d), Diagnostics with
+> **Solve problems**, MCP/Skills/Agents managers, Backup/Restore and Sync.
 
 ## 🧭 Objectives
 
@@ -76,13 +74,24 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 
 ## 🚀 Installation
 
-### From a release (recommended for users)
+### From a release (recommended — no command line needed)
 
-Download the installer for your platform from the Releases page:
+Download from the [Releases page](https://github.com/luizdione/CEM/releases):
 
-- **Windows** — `Claude Environment Manager-Setup-x.y.z.exe`
-- **macOS** — `Claude Environment Manager-x.y.z-<arch>.dmg`
-- **Linux** — `.AppImage` or `.deb`
+- **Windows 10/11 (x64)** — `install_CEM-x.y.z.exe`: assisted installer where you **choose the
+  install directory**; it creates a **desktop icon** and a Start Menu entry (to pin to the taskbar,
+  right‑click the Start Menu entry → *Pin to taskbar* — Windows does not allow installers to pin
+  automatically).
+- **macOS 12+** — `Claude Environment Manager-x.y.z-<arch>.dmg`. *(There is no iOS/iPadOS version:
+  Electron desktop apps cannot run on iOS.)*
+- **Linux** — one‑line command‑line install (downloads the latest AppImage and registers a desktop
+  entry, no root needed):
+
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/luizdione/CEM/main/scripts/install-linux.sh | bash
+  ```
+
+  `.deb` packages are also attached to each release.
 
 ### From source (for developers)
 
@@ -90,7 +99,7 @@ Download the installer for your platform from the Releases page:
 
 #### 1. Clone and enter the repository
 ```bash
-git clone https://github.com
+git clone https://github.com/luizdione/CEM.git
 cd CEM
 ```
 
@@ -182,7 +191,9 @@ CEM/
 │   ├── markdown/    # token/line stats, references, overlap detection
 │   ├── mcp/         # MCP discovery, normalization, redaction
 │   ├── profiles/    # profile CRUD, matching, templates
-│   ├── diagnostics/ # health checks + token rollups
+│   ├── diagnostics/ # health checks, token rollups + fix remediation
+│   ├── usage/       # temporal token-usage analytics (local transcripts)
+│   ├── sync/        # optional, explicit Git sync of backups
 │   ├── backup/      # .cem planner & writer
 │   └── restore/     # read, verify, restore
 ├── docs/            # architecture, API, .cem format, flows, manuals

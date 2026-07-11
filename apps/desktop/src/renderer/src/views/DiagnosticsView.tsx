@@ -9,19 +9,41 @@ export function DiagnosticsView(): JSX.Element {
   const [proposing, setProposing] = useState(false);
   const [results, setResults] = useState<Record<string, RemediationResult>>({});
   const [ignored, setIgnored] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busyId, setBusyId] = useState<string>();
+  const [bulkBusy, setBulkBusy] = useState(false);
+
+  const automatic = (remediations ?? []).filter((r) => r.automatic);
+  const pending = automatic.filter((r) => !results[r.id] && !ignored.has(r.id));
+  const allSelected = pending.length > 0 && pending.every((r) => selected.has(r.id));
 
   const solve = async (): Promise<void> => {
     setProposing(true);
     setResults({});
     setIgnored(new Set());
     try {
-      setRemediations(await cem.remediationPropose({}));
+      const proposals = await cem.remediationPropose({});
+      setRemediations(proposals);
+      // Pre-select every automatic fix so "Solve Problems" is one click away.
+      setSelected(new Set(proposals.filter((r) => r.automatic).map((r) => r.id)));
     } catch {
       setRemediations([]);
     } finally {
       setProposing(false);
     }
+  };
+
+  const toggleAll = (checked: boolean): void => {
+    setSelected(checked ? new Set(pending.map((r) => r.id)) : new Set());
+  };
+
+  const toggleOne = (id: string, checked: boolean): void => {
+    setSelected((s) => {
+      const next = new Set(s);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
   };
 
   const accept = async (rem: Remediation): Promise<void> => {
@@ -32,6 +54,19 @@ export function DiagnosticsView(): JSX.Element {
       reload();
     } finally {
       setBusyId(undefined);
+    }
+  };
+
+  const solveSelected = async (): Promise<void> => {
+    setBulkBusy(true);
+    try {
+      for (const rem of pending.filter((r) => selected.has(r.id))) {
+        const result = await cem.remediationApply(rem);
+        setResults((r) => ({ ...r, [rem.id]: result }));
+      }
+      reload();
+    } finally {
+      setBulkBusy(false);
     }
   };
 
@@ -64,7 +99,25 @@ export function DiagnosticsView(): JSX.Element {
 
       {remediations && (
         <Card style={{ marginBottom: 14 }}>
-          <h3 style={{ marginTop: 0 }}>Proposed fixes ({remediations.length})</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <h3 style={{ margin: 0 }}>Proposed fixes ({remediations.length})</h3>
+            {pending.length > 0 && (
+              <>
+                <label style={{ display: 'flex', gap: 6, alignItems: 'center', fontSize: 13 }}>
+                  <input type="checkbox" checked={allSelected} onChange={(e) => toggleAll(e.target.checked)} />
+                  Select all ({pending.length})
+                </label>
+                <button
+                  className="btn primary"
+                  disabled={bulkBusy || selected.size === 0}
+                  onClick={solveSelected}
+                >
+                  {bulkBusy ? <Spinner /> : `Solve ${selected.size} selected`}
+                </button>
+              </>
+            )}
+          </div>
+
           {remediations.length === 0 ? (
             <p style={{ color: 'var(--text-dim)' }}>Nothing to fix — your environment looks healthy.</p>
           ) : (
@@ -74,9 +127,16 @@ export function DiagnosticsView(): JSX.Element {
               return (
                 <div
                   key={rem.id}
-                  style={{ borderTop: '1px solid var(--border)', padding: '12px 0', opacity: isIgnored ? 0.5 : 1 }}
+                  style={{ borderTop: '1px solid var(--border)', padding: '12px 0', opacity: isIgnored ? 0.5 : 1, marginTop: 10 }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {rem.automatic && !result && !isIgnored ? (
+                      <input
+                        type="checkbox"
+                        checked={selected.has(rem.id)}
+                        onChange={(e) => toggleOne(rem.id, e.target.checked)}
+                      />
+                    ) : null}
                     <strong>{rem.title}</strong>
                     {rem.automatic ? (
                       rem.destructive ? <Badge tone="warn">auto · deletes</Badge> : <Badge tone="good">auto</Badge>
@@ -97,7 +157,7 @@ export function DiagnosticsView(): JSX.Element {
                     <Badge>ignored</Badge>
                   ) : rem.automatic ? (
                     <div style={{ display: 'flex', gap: 8 }}>
-                      <button className="btn primary" disabled={busyId === rem.id} onClick={() => accept(rem)}>
+                      <button className="btn primary" disabled={busyId === rem.id || bulkBusy} onClick={() => accept(rem)}>
                         {busyId === rem.id ? <Spinner /> : 'Accept'}
                       </button>
                       <button className="btn" onClick={() => ignore(rem)}>
