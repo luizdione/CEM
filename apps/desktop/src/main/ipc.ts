@@ -58,7 +58,7 @@ import {
 import { IPC } from '../shared/ipc.js';
 import { exportPlan, type PlanExportRequest } from './plan.js';
 
-const CEM_VERSION = '1.3.1';
+const CEM_VERSION = '1.3.2';
 
 async function tokenReport(options: ScanOptions) {
   const scan = await scanEnvironment({ ...options, computeTokens: true });

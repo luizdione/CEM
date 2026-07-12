@@ -1,10 +1,20 @@
 import { readFile } from 'node:fs/promises';
-import { unzipSync, strFromU8 } from 'fflate';
+import { unzip, strFromU8, type Unzipped } from 'fflate';
 import { RestoreError, UnsupportedVersionError, ValidationError } from '@cem/shared';
 import { type CemEntry, type CemManifest, isCemManifest, isFormatSupported } from '@cem/core';
 import { decrypt } from '@cem/crypto';
 
 const RESERVED_FILES = new Set(['manifest.json', 'checksums.json', 'entries.json', 'config.json']);
+
+/**
+ * Decompress off the main thread (fflate spawns worker threads); a synchronous
+ * unzip of a large archive would freeze the Electron UI for its duration.
+ */
+function unzipAsync(bytes: Uint8Array): Promise<Unzipped> {
+  return new Promise((resolve, reject) => {
+    unzip(bytes, (err, data) => (err ? reject(err) : resolve(data)));
+  });
+}
 
 export interface CemArchive {
   readonly manifest: CemManifest;
@@ -19,7 +29,7 @@ export interface CemArchive {
 /** Read just the manifest of a `.cem` file (no password required). */
 export async function readManifest(archivePath: string): Promise<CemManifest> {
   const bytes = await readFile(archivePath);
-  const outer = unzipSync(new Uint8Array(bytes));
+  const outer = await unzipAsync(new Uint8Array(bytes));
   const manifestBytes = outer['manifest.json'];
   if (!manifestBytes) throw new ValidationError('Not a valid .cem archive: manifest.json missing.');
   const manifest = JSON.parse(strFromU8(manifestBytes)) as unknown;
@@ -36,7 +46,7 @@ export async function readCemArchive(
   password?: string,
 ): Promise<CemArchive> {
   const bytes = await readFile(archivePath);
-  const outer = unzipSync(new Uint8Array(bytes));
+  const outer = await unzipAsync(new Uint8Array(bytes));
 
   const manifestBytes = outer['manifest.json'];
   if (!manifestBytes) throw new ValidationError('Not a valid .cem archive: manifest.json missing.');
@@ -62,7 +72,7 @@ export async function readCemArchive(
       Buffer.from(enc),
       password,
     );
-    payload = unzipSync(new Uint8Array(plaintext));
+    payload = await unzipAsync(new Uint8Array(plaintext));
   } else {
     payload = { ...outer };
     delete payload['manifest.json'];

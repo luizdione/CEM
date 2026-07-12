@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { zipSync, strToU8 } from 'fflate';
+import { zip, strToU8, type AsyncZippable, type AsyncZipOptions } from 'fflate';
 import {
   type Logger,
   CEM_FORMAT_VERSION,
@@ -34,6 +34,17 @@ export interface BackupOptions {
   readonly cemVersion?: string;
   readonly claudeVersion?: string;
   readonly logger?: Logger;
+}
+
+/**
+ * Compress off the main thread (fflate spawns worker threads). Keeping the
+ * event loop free matters in the Electron main process: a synchronous zip of a
+ * large environment freezes every window for its whole duration.
+ */
+function zipAsync(files: AsyncZippable, opts: AsyncZipOptions): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    zip(files, opts, (err, data) => (err ? reject(err) : resolve(data)));
+  });
 }
 
 export interface BackupResult {
@@ -125,7 +136,7 @@ export async function createBackup(
   let outerFiles: Record<string, Uint8Array>;
 
   if (options.password) {
-    const innerZip = zipSync(payloadFiles, { level: 9 });
+    const innerZip = await zipAsync(payloadFiles, { level: 9 });
     const envelope = await encrypt(Buffer.from(innerZip), options.password);
     encryption = {
       enabled: true,
@@ -155,7 +166,7 @@ export async function createBackup(
 
   outerFiles['manifest.json'] = strToU8(`${JSON.stringify(manifest, null, 2)}\n`);
 
-  const archive = zipSync(outerFiles, { level: options.password ? 0 : 6 });
+  const archive = await zipAsync(outerFiles, { level: options.password ? 0 : 6 });
 
   await ensureDir(options.outDir);
   const fileName = normalizeFileName(options.fileName ?? `cem-backup-${fileTimestamp()}.cem`);

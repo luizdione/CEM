@@ -6,6 +6,14 @@ import type { UsageCategory, UsageEntry } from './types.js';
 /** Largest transcript file we will parse (guards against pathological files). */
 const MAX_TRANSCRIPT_BYTES = 200 * 1024 * 1024;
 
+/**
+ * Yield to the event loop every N parsed lines. Transcript corpora can reach
+ * hundreds of MB; an uninterrupted JSON.parse loop would freeze the Electron
+ * main process (and every window) for its whole duration.
+ */
+const YIELD_EVERY_LINES = 5_000;
+const yieldToEventLoop = (): Promise<void> => new Promise((resolve) => setImmediate(resolve));
+
 const GIT_RE = /(^|[\s;&|(])(git|gh)\s/;
 
 interface RawLine {
@@ -63,6 +71,7 @@ export async function parseUsage(options: { home?: string } = {}): Promise<Usage
 
   const entries: UsageEntry[] = [];
   const seen = new Set<string>();
+  let linesSeen = 0;
 
   for (const file of files) {
     let raw: string;
@@ -75,6 +84,8 @@ export async function parseUsage(options: { home?: string } = {}): Promise<Usage
     const fileSession = basename(file.path, '.jsonl');
 
     for (const line of raw.split('\n')) {
+      linesSeen += 1;
+      if (linesSeen % YIELD_EVERY_LINES === 0) await yieldToEventLoop();
       if (!line.trim()) continue;
       let parsed: RawLine;
       try {

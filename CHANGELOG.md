@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-07-12
+
+### Fixed
+
+- **UI freezes during heavy operations** — `.cem` compression/decompression now runs off the
+  Electron main thread (fflate worker-based async API replaces the synchronous calls), and the
+  transcript parser yields to the event loop every few thousand lines. Previously, creating the
+  pre-update backup, restoring/verifying a large archive or opening the Token Usage tab with a
+  large transcript history could freeze every window ("not responding") until the work finished.
+- The updater now broadcasts a visible **"Creating a backup of your environment before
+  updating…"** status while the pre-update backup runs, instead of appearing stuck.
+
 ## [1.3.1] - 2026-07-12
 
 ### Changed

@@ -5,10 +5,10 @@ import { backupEnvironment } from '@cem/backup';
 import { IPC } from '../shared/ipc.js';
 
 const { autoUpdater } = electronUpdater;
-const CEM_VERSION = '1.3.1';
+const CEM_VERSION = '1.3.2';
 
 export interface UpdateStatus {
-  state: 'dev' | 'checking' | 'available' | 'none' | 'downloading' | 'downloaded' | 'error';
+  state: 'dev' | 'checking' | 'available' | 'none' | 'backing-up' | 'downloading' | 'downloaded' | 'error';
   version?: string;
   percent?: number;
   message?: string;
@@ -63,6 +63,7 @@ export function registerUpdater(): void {
     try {
       const config = await loadConfig();
       if (config.backupBeforeUpdate !== false) {
+        broadcast({ state: 'backing-up' });
         const result = await backupEnvironment({ notes: 'Automatic pre-update backup', cemVersion: CEM_VERSION });
         preUpdateBackup = result.path;
         await appendAudit({ action: 'backup', ok: true, message: `pre-update: ${result.path}` });

@@ -40,7 +40,7 @@ export interface RestoreRequestOptions {
 }
 
 export interface UpdateStatus {
-  state: 'dev' | 'checking' | 'available' | 'none' | 'downloading' | 'downloaded' | 'error';
+  state: 'dev' | 'checking' | 'available' | 'none' | 'backing-up' | 'downloading' | 'downloaded' | 'error';
   version?: string;
   percent?: number;
   message?: string;

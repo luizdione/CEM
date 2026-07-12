@@ -176,6 +176,8 @@ function describeUpdate(status: UpdateStatus | undefined): string {
       return `Version ${status.version ?? ''} is available.`;
     case 'none':
       return 'You are on the latest version.';
+    case 'backing-up':
+      return 'Creating a backup of your environment before updating…';
     case 'downloading':
       return `Downloading… ${status.percent ?? 0}%`;
     case 'downloaded':

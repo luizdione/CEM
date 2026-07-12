@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/luizdione/CEM/actions/workflows/ci.yml/badge.svg)](https://github.com/luizdione/CEM/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Semantic Versioning](https://img.shields.io/badge/semver-1.3.1-green.svg)](https://semver.org)
+[![Semantic Versioning](https://img.shields.io/badge/semver-1.3.2-green.svg)](https://semver.org)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
 
 </div>
