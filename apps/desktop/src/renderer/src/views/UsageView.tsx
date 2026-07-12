@@ -55,7 +55,7 @@ export function UsageView(): JSX.Element {
         '',
         '## Instructions for Claude Code',
         '',
-        'Apply each proposal above to this environment. For file-shrinking items, edit the referenced file directly; for session-branching items, summarize what a fresh session should carry over. Ask before deleting anything.',
+        'Apply each proposal above to this environment. For "Shrink" items, edit the referenced file directly and show a diff before saving. For "Run … instead of reading" and "Query … instead of reading" items, do NOT edit the script or data file — adjust the workflow (e.g. the SKILL.md) or add a small lookup script so the file is executed/queried rather than read into context. For session-branching items, summarize what a fresh session should carry over. Ask before deleting anything.',
       ].join('\n');
       const result = await cem.planExport({
         title: 'CEM — Token usage improvement plan',

@@ -35,8 +35,19 @@ skipped, and files over 200 MB are ignored.
 ### Association with your configuration
 
 The report correlates active projects with the **markdown/config files they load**
-(`CLAUDE.md`, skills, agents, commands): large files that enter the context window of active
-projects are surfaced as shrink candidates with their estimated token weight.
+(`CLAUDE.md`, skills, agents, commands). Each heavy file is classified by *how Claude Code
+actually loads it*, because a big file on disk costs nothing until it enters the context window:
+
+| Load class | Files | Proposal |
+| --- | --- | --- |
+| Always loaded | memory (`CLAUDE.md`) | shrink — enters every session at startup |
+| Per invocation | `SKILL.md` body, agents, commands | shrink — only name + description load at startup |
+| Script | `.py`, `.sh`, `.js`, … bundled with a skill | run it, don't read it — no shrinking needed |
+| Data | `.json`, `.txt`, `.csv`, … corpora/registries | query via a lookup script — don't trim the data |
+| On-demand | other reference `.md` | fine if read rarely; split if read on every run |
+
+Token-saving estimates are only claimed for the first two classes, where the file demonstrably
+enters the context window.
 
 ## Improvement proposals
 
@@ -45,7 +56,7 @@ domain heuristics — deterministic, explainable, fully local:
 
 - **Branch/restart a session** whose average context‑read per message is an outlier (the context
   window is re‑read on every reply, so heavy sessions bleed tokens).
-- **Shrink a heavy config file** (`CLAUDE.md`, skill, agent, command) loaded by an active project.
+- **Shrink / run / query a heavy config file** according to its load class (table above).
 - **Batch git/GitHub operations** when they exceed ~15% of window spend.
 - **Context churn** warning when cache creation dominates (frequent restarts × heavy configs).
 - **Agent share** insight when most work is delegated to subagents.

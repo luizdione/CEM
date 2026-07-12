@@ -6,6 +6,25 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-07-12
+
+### Changed
+
+- **Smarter token-usage proposals** — the Token Usage analyzer now classifies each heavy file in
+  `~/.claude` by *how Claude Code actually loads it* instead of flagging everything for shrinking:
+  memory files (`CLAUDE.md`) are "always loaded" (shrink), `SKILL.md` bodies / agents / commands
+  load *per invocation* (shrink, titled with the owning skill), bundled **scripts** should be
+  *executed, not read* (no shrink), **data/corpus** files should sit *behind a lookup script*
+  instead of being read wholesale (no shrink), and other reference Markdown is *on-demand*.
+  Token-saving estimates are only claimed where the file demonstrably enters the context window.
+- The exported "Send to Claude Code" usage plan carries matching instructions (edit "Shrink" items;
+  never edit script/data items — adjust the workflow instead).
+
+### Fixed
+
+- Linux packages ship under the flat name `cem-desktop` (the scoped npm name broke the `.deb`
+  artifact path and would produce an invalid dpkg package name).
+
 ## [1.3.0] - 2026-07-11
 
 ### Added

@@ -30,6 +30,108 @@ function stddev(values: readonly number[], m: number): number {
 
 const CONFIG_KINDS = new Set(['memory', 'skill', 'agent', 'command', 'markdown']);
 
+/**
+ * How Claude Code actually pulls a config file into the context window.
+ * Files cost tokens only when loaded — a big file on disk is free:
+ * - 'always':      memory files (CLAUDE.md) enter every session at startup.
+ * - 'invocation':  SKILL.md bodies, agent prompts and slash commands enter
+ *                  when invoked (only name + description load at startup).
+ * - 'script':      bundled code is meant to be executed, never read.
+ * - 'data':        corpora/registries only cost if read wholesale.
+ * - 'on-demand':   reference docs enter only when Claude is pointed at them.
+ */
+type ConfigLoadClass = 'always' | 'invocation' | 'script' | 'data' | 'on-demand';
+
+const SCRIPT_EXTENSIONS = new Set(['py', 'sh', 'ps1', 'rb', 'pl', 'js', 'mjs', 'cjs', 'ts']);
+
+function extension(name: string): string {
+  const dot = name.lastIndexOf('.');
+  return dot >= 0 ? name.slice(dot + 1).toLowerCase() : '';
+}
+
+/** Name of the skill folder a path belongs to, e.g. …/skills/<name>/…  */
+function skillFolder(path: string): string | undefined {
+  const parts = path.split(/[\\/]+/);
+  const i = parts.lastIndexOf('skills');
+  return i >= 0 && i + 1 < parts.length - 1 ? parts[i + 1] : undefined;
+}
+
+function classifyConfigFile(artifact: ScannedArtifact): ConfigLoadClass {
+  if (artifact.kind === 'memory') return 'always';
+  if (artifact.kind === 'agent' || artifact.kind === 'command') return 'invocation';
+  if (artifact.name === 'SKILL.md') return 'invocation';
+  const ext = extension(artifact.name);
+  if (SCRIPT_EXTENSIONS.has(ext)) return 'script';
+  if (ext === 'md') return 'on-demand';
+  return 'data';
+}
+
+function configFileRecommendation(
+  artifact: ScannedArtifact,
+  scopeNote: string,
+): UsageRecommendation {
+  const tokens = artifact.tokens ?? 0;
+  const approx = `(~${tokens.toLocaleString()} tokens)`;
+  switch (classifyConfigFile(artifact)) {
+    case 'always':
+      return {
+        id: `shrink-${artifact.id}`,
+        severity: 'suggestion',
+        title: `Shrink ${artifact.name} ${approx}`,
+        detail:
+          `${artifact.path} is loaded into the context window at the start of every session. ${scopeNote} ` +
+          `Trim it and move rarely-needed sections into referenced files read on demand.`,
+        estimatedSavings: tokens,
+      };
+    case 'invocation': {
+      const skill = skillFolder(artifact.path);
+      const label = artifact.name === 'SKILL.md' && skill ? `SKILL.md of ${skill}` : artifact.name;
+      const loadNote =
+        artifact.kind === 'agent'
+          ? `${artifact.path} becomes the subagent's system prompt on every launch.`
+          : `${artifact.path} is loaded whenever it is invoked — only its name and description enter the context at session start.`;
+      return {
+        id: `shrink-${artifact.id}`,
+        severity: 'suggestion',
+        title: `Shrink ${label} ${approx}`,
+        detail:
+          `${loadNote} ${scopeNote} Keep the body lean by moving procedures and examples into ` +
+          `reference files read on demand, and keep the frontmatter description tight — that line is loaded in every session.`,
+        estimatedSavings: tokens,
+      };
+    }
+    case 'script':
+      return {
+        id: `script-${artifact.id}`,
+        severity: 'info',
+        title: `Run ${artifact.name} instead of reading it ${approx}`,
+        detail:
+          `${artifact.path} is a script bundled with a ${artifact.kind}. Executing it costs no context tokens — ` +
+          `it only costs if Claude reads the source. ${scopeNote} Make sure the workflow instructs Claude to run it ` +
+          `(not read it); shrinking the file itself is unnecessary.`,
+      };
+    case 'data':
+      return {
+        id: `data-${artifact.id}`,
+        severity: 'info',
+        title: `Query ${artifact.name} instead of reading it ${approx}`,
+        detail:
+          `${artifact.path} is a data file bundled with a ${artifact.kind}. On disk it costs nothing; it only enters ` +
+          `the context window if read wholesale. ${scopeNote} Put it behind a small lookup script (or precompute a ` +
+          `compact summary) so only the relevant slice is ever read — do not trim the data itself.`,
+      };
+    case 'on-demand':
+      return {
+        id: `ondemand-${artifact.id}`,
+        severity: 'info',
+        title: `Keep ${artifact.name} on-demand ${approx}`,
+        detail:
+          `${artifact.path} is loaded only when Claude is pointed at it, so its size is fine if it is read rarely. ` +
+          `${scopeNote} If the workflow reads it on every run, split it so each read pulls only the needed part.`,
+      };
+  }
+}
+
 /** Produce improvement recommendations from aggregated usage. */
 export function analyzeUsage(input: InsightInput): UsageRecommendation[] {
   const out: UsageRecommendation[] = [];
@@ -63,17 +165,9 @@ export function analyzeUsage(input: InsightInput): UsageRecommendation[] {
       if (!CONFIG_KINDS.has(artifact.kind) || (artifact.tokens ?? 0) < BIG_FILE_TOKENS) continue;
       const owner = [...activeProjects].find((p) => artifact.path.startsWith(p));
       const scopeNote = owner
-        ? `It is loaded in project ${owner}, active in this window (${sessionsPerProject.get(owner) ?? 0} messages).`
-        : 'It is part of your user-level configuration, loaded across sessions.';
-      out.push({
-        id: `shrink-${artifact.id}`,
-        severity: 'suggestion',
-        title: `Shrink ${artifact.name} (~${(artifact.tokens ?? 0).toLocaleString()} tokens)`,
-        detail:
-          `${artifact.path} is a large ${artifact.kind} file that enters the context window. ${scopeNote} ` +
-          `Trim it or split rarely-used sections into referenced files.`,
-        estimatedSavings: artifact.tokens ?? 0,
-      });
+        ? `It belongs to project ${owner}, active in this window (${sessionsPerProject.get(owner) ?? 0} messages).`
+        : 'It is part of your user-level configuration, available across sessions.';
+      out.push(configFileRecommendation(artifact, scopeNote));
     }
   }
 
