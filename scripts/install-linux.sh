@@ -3,10 +3,10 @@
 # Downloads the latest AppImage from GitHub Releases, installs it to
 # ~/.local/bin and registers a desktop entry. No root required.
 #
-#   curl -fsSL https://raw.githubusercontent.com/luizdione/CEM/main/scripts/install-linux.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/luizdione/CEM_software/main/scripts/install-linux.sh | bash
 set -euo pipefail
 
-REPO="luizdione/CEM"
+REPO="luizdione/CEM_software"
 BIN_DIR="${HOME}/.local/bin"
 APP_DIR="${HOME}/.local/share/applications"
 ICON_DIR="${HOME}/.local/share/icons"

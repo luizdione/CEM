@@ -157,7 +157,7 @@ export function SettingsView({
           data stays on your machine unless you explicitly export a <span className="mono">.cem</span>{' '}
           file.
         </p>
-        <button className="btn" onClick={() => cem.openExternal('https://github.com/luizdione/CEM')}>
+        <button className="btn" onClick={() => cem.openExternal('https://github.com/luizdione/CEM_software')}>
           Project on GitHub
         </button>
       </Card>

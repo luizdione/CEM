@@ -135,6 +135,6 @@ All notable changes to this project are documented here. The format is based on
   `config.json`, category directories and logs; optional AES‑256‑GCM encrypted payload.
 - Documentation, CI workflows, issue/PR templates and an example environment.
 
-[Unreleased]: https://github.com/luizdione/CEM/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/luizdione/CEM/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/luizdione/CEM/releases/tag/v1.0.0
+[Unreleased]: https://github.com/luizdione/CEM_software/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/luizdione/CEM_software/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/luizdione/CEM_software/releases/tag/v1.0.0

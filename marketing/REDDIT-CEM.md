@@ -54,8 +54,8 @@ posts com link de contas assim. Plano de aquecimento (3–5 dias):
 > documented local files. Not affiliated with Anthropic. (Fun fact: it was built almost
 > entirely *with* Claude Code.)
 >
-> Repo: https://github.com/luizdione/CEM
-> Releases (installers): https://github.com/luizdione/CEM/releases
+> Repo: https://github.com/luizdione/CEM_software
+> Releases (installers): https://github.com/luizdione/CEM_software/releases
 >
 > Feedback and issues very welcome — first public release, be gentle 🙂
 
@@ -84,7 +84,7 @@ posts com link de contas assim. Plano de aquecimento (3–5 dias):
 > - Monorepo pnpm: 12 framework-agnostic packages consumed by both the Electron app and the CLI
 > - Own archive format (.cem): ZIP + manifest + SHA-256 checksums, optional AES-256-GCM with Argon2id KDF
 > - Zero telemetry, local-only; MIT licensed; installers for Win/macOS/Linux built by GitHub Actions
-> https://github.com/luizdione/CEM
+> https://github.com/luizdione/CEM_software
 
 ---
 

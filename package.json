@@ -6,13 +6,13 @@
   "type": "module",
   "license": "MIT",
   "author": "Luiz Dione and CEM Contributors",
-  "homepage": "https://github.com/luizdione/CEM",
+  "homepage": "https://github.com/luizdione/CEM_software",
   "repository": {
     "type": "git",
-    "url": "https://github.com/luizdione/CEM.git"
+    "url": "https://github.com/luizdione/CEM_software.git"
   },
   "bugs": {
-    "url": "https://github.com/luizdione/CEM/issues"
+    "url": "https://github.com/luizdione/CEM_software/issues"
   },
   "engines": {
     "node": ">=20.0.0"

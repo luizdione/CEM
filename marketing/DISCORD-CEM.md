@@ -33,8 +33,8 @@ Anthropic software. It only reads/writes your own documented local files, and fu
 Anthropic's Terms of Use. Not affiliated with Anthropic — just built with ❤️ (and with Claude
 Code itself) for the community.
 
-📥 Releases: <https://github.com/luizdione/CEM/releases>
-⭐ Repo (MIT): <https://github.com/luizdione/CEM>
+📥 Releases: <https://github.com/luizdione/CEM_software/releases>
+⭐ Repo (MIT): <https://github.com/luizdione/CEM_software>
 
 Feedback, issues and PRs very welcome!
 
@@ -48,7 +48,7 @@ Built **CEM** — an open-source desktop app + CLI that backs up your whole Clau
 environment (skills, agents, MCPs, CLAUDE.md) into one portable, optionally-encrypted `.cem`
 file, restores it on any machine, finds & fixes config problems, and shows your real token
 usage over time with improvement proposals. 100% local, zero telemetry, never touches
-Anthropic software. MIT. <https://github.com/luizdione/CEM>
+Anthropic software. MIT. <https://github.com/luizdione/CEM_software>
 
 ---
 
@@ -64,7 +64,7 @@ de tokens (24h/3d/7d/30d) com propostas de melhoria que vão direto para o Claud
 criptografia AES-256 opcional, zero telemetria, tudo local.
 
 Nunca modifica software da Anthropic — só lê/escreve seus próprios arquivos documentados.
-Instaladores para Windows/macOS/Linux: <https://github.com/luizdione/CEM/releases> (MIT)
+Instaladores para Windows/macOS/Linux: <https://github.com/luizdione/CEM_software/releases> (MIT)
 
 ---
 

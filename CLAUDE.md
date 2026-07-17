@@ -2,7 +2,9 @@
 
 ## Maintainer environment (Luiz Dione — Windows 10/11, PowerShell 5)
 
-- **Developer copy (git clone, source):** `C:\Users\luizd\OneDrive\Data_Science\Projetos\CEM_desenvolvedor`
+- **GitHub repo renamed** (2026-07-17): `luizdione/CEM` → **`luizdione/CEM_software`**.
+  Old URLs redirect, but all new references must use `CEM_software`.
+- **Developer copy (git clone, source):** `C:\GitHub\CEM_software`
   — updated with `git pull` on `main`, then `pnpm install` / `pnpm build:packages`; run with `pnpm dev:desktop`.
 - **Usage copy (installed app):** `C:\Program Files\CEM`
   — installed from `install_CEM-x.y.z.exe` (GitHub Releases); updated via the in-app

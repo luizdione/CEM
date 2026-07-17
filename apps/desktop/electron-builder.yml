@@ -22,7 +22,7 @@ extraMetadata:
 publish:
   provider: github
   owner: luizdione
-  repo: CEM
+  repo: CEM_software
 
 # Associate the .cem file type with the app on every platform.
 fileAssociations:

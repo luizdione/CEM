@@ -4,7 +4,7 @@
 
 **Backup, restore, manage and migrate your Claude Code environment — safely and locally.**
 
-[![CI](https://github.com/luizdione/CEM/actions/workflows/ci.yml/badge.svg)](https://github.com/luizdione/CEM/actions/workflows/ci.yml)
+[![CI](https://github.com/luizdione/CEM_software/actions/workflows/ci.yml/badge.svg)](https://github.com/luizdione/CEM_software/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Semantic Versioning](https://img.shields.io/badge/semver-1.3.2-green.svg)](https://semver.org)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
@@ -76,7 +76,7 @@ Claude Code, install CEM, import the `.cem`, and your environment is back.
 
 ### From a release (recommended — no command line needed)
 
-Download from the [Releases page](https://github.com/luizdione/CEM/releases):
+Download from the [Releases page](https://github.com/luizdione/CEM_software/releases):
 
 - **Windows 10/11 (x64)** — `install_CEM-x.y.z.exe`: assisted installer where you **choose the
   install directory**; it creates a **desktop icon** and a Start Menu entry (to pin to the taskbar,
@@ -88,7 +88,7 @@ Download from the [Releases page](https://github.com/luizdione/CEM/releases):
   entry, no root needed):
 
   ```bash
-  curl -fsSL https://raw.githubusercontent.com/luizdione/CEM/main/scripts/install-linux.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/luizdione/CEM_software/main/scripts/install-linux.sh | bash
   ```
 
   `.deb` packages are also attached to each release.
@@ -99,7 +99,7 @@ Download from the [Releases page](https://github.com/luizdione/CEM/releases):
 
 #### 1. Clone and enter the repository
 ```bash
-git clone https://github.com/luizdione/CEM.git
+git clone https://github.com/luizdione/CEM_software.git
 cd CEM
 ```
 

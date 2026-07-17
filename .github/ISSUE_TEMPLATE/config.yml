@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 Questions & discussions
-    url: https://github.com/luizdione/CEM/discussions
+    url: https://github.com/luizdione/CEM_software/discussions
     about: Ask questions and share ideas with the community.
   - name: 🔐 Security vulnerability
-    url: https://github.com/luizdione/CEM/security/advisories/new
+    url: https://github.com/luizdione/CEM_software/security/advisories/new
     about: Report security issues privately (do not open a public issue).

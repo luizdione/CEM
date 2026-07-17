@@ -5,7 +5,7 @@
 If you discover a security vulnerability in CEM, please report it **privately**:
 
 - Email **luiz.dione.melo@gmail.com** with the subject `CEM SECURITY`, or
-- Use GitHub's [private vulnerability reporting](https://github.com/luizdione/CEM/security/advisories/new).
+- Use GitHub's [private vulnerability reporting](https://github.com/luizdione/CEM_software/security/advisories/new).
 
 Please include a description, reproduction steps, affected version and potential impact. We aim to
 acknowledge reports within 72 hours and to provide a remediation timeline after triage.
