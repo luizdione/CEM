@@ -1,0 +1,33 @@
+1
+00:00:03,000 --> 00:00:11,000
+Your entire Claude Code setup at a glance.
+
+2
+00:00:11,000 --> 00:00:21,000
+Read-only scan of every Claude Code artifact on your machine.
+
+3
+00:00:21,000 --> 00:00:36,000
+Real token usage over time —
+with concrete cleanup suggestions.
+
+4
+00:00:36,000 --> 00:00:51,000
+Find config problems, then fix them in one click.
+
+5
+00:00:51,000 --> 00:01:03,000
+Encrypted, local backups (AES-256).
+No cloud, no telemetry.
+
+6
+00:01:03,000 --> 00:01:15,000
+Selective restore with dry-run — pick what comes back.
+
+7
+00:01:15,000 --> 00:01:23,000
+Manage MCP servers — secrets masked by default.
+
+8
+00:01:23,000 --> 00:01:31,000
+Built-in updater. Open source, MIT, compliance-first.
