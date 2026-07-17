@@ -106,6 +106,39 @@ antes** — muitos exigem karma/idade mínimos ou têm dia/flair específico par
 
 ---
 
+## Tutorial: como publicar o post (passo a passo)
+
+Assets prontos: **CEM-demo-90s.gif** (2,8 MB), **CEM-demo-EN-90s.mp4** (90 s, 4,7 MB) e o texto
+abaixo. Duas formas de postar — escolha uma:
+
+### Opção A — Post de TEXTO com GIF (recomendada: mais contexto)
+
+1. Aqueça a conta antes (Fase 0). Escolha o sub (comece por **r/ClaudeAI**) e leia as regras fixadas.
+2. Em reddit.com, clique em **Create Post** → selecione a comunidade (r/ClaudeAI).
+3. Aba **Text**. Cole um **Título** (opções abaixo).
+4. No corpo, cole o texto do post (Fase 2). Com o editor rich-text aberto, **arraste o
+   `CEM-demo-90s.gif` para dentro do corpo** — ele embeda e roda no feed.
+5. Suba o **`CEM-demo-EN-90s.mp4`** no **YouTube (não listado)** e cole o link no corpo (o Reddit
+   não embeda vídeo dentro de post de texto — só imagem/GIF).
+6. Selecione a **flair** exigida (ex.: "Built with Claude"/"Project"), se houver.
+7. **Post**. Fique 1–2 h respondendo comentários.
+
+### Opção B — Post de VÍDEO (mais alcance visual, menos texto)
+
+1. **Create Post** → comunidade → aba **Images & Video** → suba o **`CEM-demo-EN-90s.mp4`**
+   (4,7 MB; o Reddit hospeda e dá autoplay no feed).
+2. Título forte (o vídeo já mostra tudo). Como não há corpo, ponha o **link do GitHub no
+   primeiro comentário** assim que publicar (e avise "source in the comments" no título/comentário).
+3. Responda os comentários.
+
+> **Título (EN) — escolha um:**
+> - `I built an open-source, local-first manager for your Claude Code environment (backups, token usage, diagnostics) — feedback welcome`
+> - `[Open source] CEM: back up, restore and migrate your entire Claude Code setup from one local app`
+>
+> **Corpo:** use o texto pronto da Fase 2 (EN) acima. Link: **github.com/luizdione/CEM**
+
+---
+
 ## Checklist rápido
 
 - [ ] Conta com e-mail verificado, avatar e bio
