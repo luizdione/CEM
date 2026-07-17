@@ -56,24 +56,21 @@ trap 'rm -rf "$WORK"' EXIT
 to_seconds() { local t="$1" s=0 p IFS=:; read -ra P <<< "$t"; for p in "${P[@]}"; do s=$(( s*60 + 10#${p%%.*} )); done; echo "$s"; }
 to_srt_ts()  { printf "%02d:%02d:%02d,000" $(($1/3600)) $((($1%3600)/60)) $(($1%60)); }
 
-# ----- 1ª passada: limites do corpo (menor start / maior end) -----
-BODY_START_S=""; BODY_END_S=""
-while IFS='|' read -r start end cap; do
-  [[ "$start" =~ ^[[:space:]]*# ]] && continue
-  [[ -z "${start// }" ]] && continue
-  s=$(to_seconds "$start"); e=$(to_seconds "$end")
-  [[ -z "$BODY_START_S" || "$s" -lt "$BODY_START_S" ]] && BODY_START_S="$s"
-  [[ -z "$BODY_END_S"   || "$e" -gt "$BODY_END_S"   ]] && BODY_END_S="$e"
-done < "$SCENES"
-[[ -n "$BODY_START_S" && -n "$BODY_END_S" ]] || { echo "ERRO: scenes.conf sem cenas válidas" >&2; exit 1; }
+# ----- limites do corpo: padrão = vídeo inteiro; override com BODY_START/BODY_END -----
+# (as janelas de legenda no scenes.conf são INDEPENDENTES do corte do corpo)
+DUR_RAW=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$IN"); DUR_INT="${DUR_RAW%.*}"
+BODY_START_S=$(to_seconds "${BODY_START:-0}")
+BODY_END_S=$(to_seconds "${BODY_END:-$DUR_INT}")
+(( BODY_END_S > BODY_START_S )) || { echo "ERRO: BODY_END <= BODY_START" >&2; exit 1; }
 BODY_DUR=$(( BODY_END_S - BODY_START_S ))
-(( BODY_DUR > 0 )) || { echo "ERRO: duração do corpo <= 0 (confira scenes.conf)" >&2; exit 1; }
 
 # ----- geometria da gravação -----
 W=$(ffprobe -v error -select_streams v:0 -show_entries stream=width  -of csv=p=0 "$IN")
 H=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$IN")
 FPS=$(ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 "$IN"); FPS="${FPS:-30}"
-FS_TITLE=$(( H / 14 )); FS_SUB=$(( H / 30 )); SUB_FS=$(( H / 22 )); MARGINV=$(( H / 16 ))
+# cartelas usam pixels reais (drawtext); a legenda usa o espaço PlayResY=288 do libass
+# → Fontsize 13 ≈ H/22 final e MarginV 14 fica logo acima da barra de status, em qualquer resolução
+FS_TITLE=$(( H / 14 )); FS_SUB=$(( H / 30 )); SUB_FS="${SUB_FS:-13}"; MARGINV="${MARGINV:-14}"
 echo "Entrada: ${W}x${H} @ ${FPS}fps | corpo ${BODY_START_S}s→${BODY_END_S}s (${BODY_DUR}s)"
 
 # ----- cartelas (textfile evita dor de escape) -----
@@ -105,7 +102,10 @@ SRT="$WORK/final.srt"; : > "$SRT"; idx=0
 while IFS='|' read -r start end cap; do
   [[ "$start" =~ ^[[:space:]]*# ]] && continue
   [[ -z "${start// }" ]] && continue
-  idx=$((idx+1)); s=$(to_seconds "$start"); e=$(to_seconds "$end")
+  s=$(to_seconds "$start"); e=$(to_seconds "$end")
+  (( e <= BODY_START_S || s >= BODY_END_S )) && continue   # legenda fora do corpo aparado
+  (( s < BODY_START_S )) && s=$BODY_START_S; (( e > BODY_END_S )) && e=$BODY_END_S
+  idx=$((idx+1))
   fs=$(( TITLE_SEC + s - BODY_START_S )); fe=$(( TITLE_SEC + e - BODY_START_S ))
   { echo "$idx"; echo "$(to_srt_ts "$fs") --> $(to_srt_ts "$fe")"; echo "$cap"; echo; } >> "$SRT"
 done < "$SCENES"
@@ -115,12 +115,12 @@ cp "$SRT" "$OUTDIR/CEM-demo-EN.srt"
 echo "→ queimando legendas..."
 OUT_MP4="$OUTDIR/CEM-demo-EN.mp4"
 ffmpeg -y -v error -i "$WORK/concat.mp4" \
-  -vf "subtitles=${SRT}:original_size=${W}x${H}:force_style='FontName=DejaVu Sans,Fontsize=${SUB_FS},PrimaryColour=&H00FFFFFF&,OutlineColour=&H00101010&,BorderStyle=1,Outline=2,Shadow=1,MarginV=${MARGINV}'" \
+  -vf "subtitles=${SRT}:force_style='FontName=DejaVu Sans,Fontsize=${SUB_FS},PrimaryColour=&H00FFFFFF&,OutlineColour=&H00101010&,BorderStyle=1,Outline=1,Shadow=0,MarginV=${MARGINV}'" \
   -c:v libx264 -pix_fmt yuv420p -crf 20 -preset medium -movflags +faststart "$OUT_MP4"
 
 # ----- GIF p/ Discord (< 10 MB) -----
 echo "→ GIF para o Discord..."
-GIF_START="${GIF_START:-$(( TITLE_SEC + 18 ))}"   # ~cena 3 (Token Usage) por padrão
+GIF_START="${GIF_START:-$(( TITLE_SEC + 48 - BODY_START_S ))}"   # ~cena Token Usage por padrão
 GIF_DUR="${GIF_DUR:-14}"; GIF_W="${GIF_W:-640}"; GIF_FPS="${GIF_FPS:-14}"
 OUT_GIF="$OUTDIR/CEM-demo.gif"
 ffmpeg -y -v error -ss "$GIF_START" -t "$GIF_DUR" -i "$OUT_MP4" \
